@@ -55,12 +55,10 @@ possibili e immaginabili riguardo il device/accunt del votante
 Endpoint per i risultati delle votazioni. Tornerà un array ordinato dei players
 ```javascript
 [{
-    {
-        id: 'PLAYER_ID',
-        name: 'PLAYER_NAME',
-        votes: NUM_VOTES,
-        preview_url: 'http://S3_preview_url'
-    }
+    id: 'PLAYER_ID',
+    name: 'PLAYER_NAME',
+    votes: NUM_VOTES,
+    preview_url: 'http://S3_preview_url'
 }]
 ```
 
