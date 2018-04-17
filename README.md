@@ -1,5 +1,5 @@
 # Servizi Backend per APP mobile
-Esporremo un backend su un sottodominio interlogica, probabilemnte
+Esporremo un backend su un sottodominio interlogica, probabilmente
 https://apicitd.interlogica.it
 
 ---
@@ -51,7 +51,7 @@ content/grafica per l'app.
 Endpoint per effettuare il voto. Come content della richiesta possiamo mettere tutti i metadati
 possibili e immaginabili riguardo il device/accunt del votante
 
-GET /vote/roundId
+#### GET /vote/roundId
 Endpoint per i risultati delle votazioni. Tornerà un array ordinato dei players
 ```javascript
 [{
@@ -98,7 +98,7 @@ Message format
 #### VOTE_COUNTDOWN
 ```javascript
 {
-    type: 'VOTE_COUNTDOWN,
+    type: 'VOTE_COUNTDOWN',
     data: {roundId: '', missing: ''}
 }
 ```
