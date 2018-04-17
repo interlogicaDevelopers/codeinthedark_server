@@ -67,7 +67,7 @@ Endpoint per i risultati delle votazioni. Tornerà un array ordinato dei players
 ___
 
 ## TIMING SOCKETS
-Socket su porta 9998 in broadcast per il timing dei round
+Socket in broadcast per il timing dei round
 ```javascript
 Message format
 {
