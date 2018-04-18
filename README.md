@@ -80,7 +80,7 @@ Message format
 ```javascript
 {
     type: 'ROUND_COUNTDOWN'
-    data: {roundId: '', missing: ''}
+    data: {round: {}, missing: ''}
 }
 ```
 
@@ -88,7 +88,7 @@ Message format
 ```javascript
 {
     type: 'ROUND_END_COUNTDOWN'
-    data: {roundId: '', missing: ''}
+    data: {round: {}, missing: ''}
 }
 ```
 
@@ -97,7 +97,7 @@ Message format
 ```javascript
 {
     type: 'VOTE_COUNTDOWN',
-    data: {roundId: '', missing: ''}
+    data: {round: {}, missing: ''}
 }
 ```
 

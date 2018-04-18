@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <script src="node_modules/socket.io-client/dist/socket.io.js"></script>
+    </head>
+    <body>
+        <div>
+            <h3 id="type"></h3>
+            <p id="data"></p>
+        </div>
+
+        <script>
+
+            const endpoint = 'http://localhost:3000';
+
+            const socket = io(endpoint);
+
+            socket.on('connect', () => {
+                console.log('connect')
+            })
+
+            const dataBox = document.querySelector('#data')
+            const typeBox = document.querySelector('#type')
+
+            socket.on('message', (message) => {
+                dataBox.innerHTML = JSON.stringify(message.data);
+                typeBox.innerHTML = message.type;
+            })
+
+            fetch(endpoint + '/')
+                .then(res => {
+                    return res.text()
+                })
+                .then(data => {
+                    console.log(data)
+                })
+
+            fetch(endpoint + '/round')
+                .then(res => {
+                    return res.json()
+                })
+                .then(json => {
+                    console.log(json)
+                })  
+                
+            fetch(endpoint + '/content/index.html')
+                .then(res => {
+                    return res.text()
+                })
+                .then(json => {
+                    console.log(json)
+                })  
+            
+
+        </script>
+    </body>
+</html>

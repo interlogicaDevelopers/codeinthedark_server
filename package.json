@@ -1,0 +1,37 @@
+{
+  "name": "codeinthedark_server",
+  "version": "1.0.0",
+  "description": "Esporremo un backend su un sottodominio interlogica, probabilmente https://apicitd.interlogica.it",
+  "main": "index.js",
+  "dependencies": {
+    "async-middleware": "^1.2.1",
+    "aws-sdk": "^2.224.1",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "lodash": "^4.17.5",
+    "moment": "^2.22.1",
+    "mongoose": "^5.0.15",
+    "pm2": "^2.10.2",
+    "socket.io": "^2.1.0"
+  },
+  "devDependencies": {
+    "socket.io-client": "^2.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "./node_modules/.bin/pm2 start index.js --watch;./node_modules/.bin/pm2 log index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interlogicaDevelopers/codeinthedark_server.git"
+  },
+  "author": "Interlogica",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/interlogicaDevelopers/codeinthedark_server/issues"
+  },
+  "homepage": "https://github.com/interlogicaDevelopers/codeinthedark_server#readme"
+}
