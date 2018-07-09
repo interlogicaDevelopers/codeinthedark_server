@@ -12,7 +12,7 @@ db.once('open', function() {
 
 const playerSchema = new mongoose.Schema({
     name: 'string'
-}) 
+});
 
 const Player = mongoose.model('Player', playerSchema);
 
@@ -29,7 +29,7 @@ const roundSchema = new mongoose.Schema({
     end: Date,
     vote_start: Date,
     vote_end: Date
-})
+});
 
 const Round = mongoose.model('Round', roundSchema);
 
@@ -38,7 +38,7 @@ const voteSchema = new mongoose.Schema({
     vote_for: mongoose.Schema.Types.ObjectId,
     round: mongoose.Schema.Types.ObjectId,
     voter: mongoose.Schema.Types.Mixed
-})
+});
 
 const Vote = mongoose.model('Vote', roundSchema);
 
@@ -50,6 +50,6 @@ module.exports = {
     Player,
     Round,
     Vote
-}
+};
 
 
