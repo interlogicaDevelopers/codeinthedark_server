@@ -10,10 +10,12 @@
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "http-auth": "^3.2.3",
     "lodash": "^4.17.5",
     "moment": "^2.22.1",
     "mongoose": "^5.0.15",
     "pm2": "^2.10.2",
+    "pug": "^2.0.3",
     "socket.io": "^2.1.0"
   },
   "devDependencies": {

@@ -1,0 +1,53 @@
+html
+    head
+        title!= title
+        script(
+            src='/assets/dashboard.js'
+        )
+    body
+        h1 DASHBOARD
+
+        h2 Rounds
+
+        div
+            button Add Round
+
+        table
+            thead
+                tr
+                    th roundId
+                    th name
+                    th layout_url
+                    th players
+                    th next
+                    th running
+                    th voting
+                    th start
+                    th end
+                    th vote_start
+                    th vote_end
+                    th actions
+            tbody
+                each round in rounds
+                    tr
+                        td= round._id
+                        td= round.name
+                        td= round.layout_url
+                        td= round.players
+                        td= round.next
+                        td= round.running
+                        td= round.voting
+                        td= round.start
+                        td= round.end
+                        td= round.vote_start
+                        td= round.vote_end
+                        td
+                            button(onclick="startRound('" + round._id + "')") Start
+                            button(onclick="stopRound('" + round._id + "')") Stop
+                            button(onclick="archiveRound(('" + round._id + "'))") Archive
+                            button(onclick="nextRound('" + round._id + "')") Set as next
+                            button(onclick="startVote(('" + round._id + "'))") start_vote_countdown
+                            button(onclick="showResults(('" + round._id + "'))") show_results
+
+
+
