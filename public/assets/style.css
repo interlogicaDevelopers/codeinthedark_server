@@ -1,0 +1,8 @@
+.danger {
+    background: red;
+    color: white
+}
+
+#socket-status {
+    background: aqua;
+}

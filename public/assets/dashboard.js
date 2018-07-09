@@ -1,5 +1,30 @@
 var DOMAIN = '';
 
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    initSocket();
+})
+
+function initSocket() {
+    const endpoint = 'http://localhost:3000';
+
+    const socket = io(endpoint);
+
+    socket.on('connect', () => {
+        console.log('connect')
+    })
+
+    const dataBox = document.querySelector('#socket-status')
+    const typeBox = document.querySelector('#socket-status-message')
+
+    socket.on('message', (message) => {
+        dataBox.innerHTML = JSON.stringify(message.data);
+        typeBox.innerHTML = message.type;
+    })
+}
+
+
 function startRound(id) {
 
     console.log('start Round', id);
@@ -122,6 +147,52 @@ function showResults(id) {
 
     fetch(DOMAIN + '/round/showResults/' + id, {
         method: 'POST'
+    })
+        .then(response => {
+
+            if (response.status === 200) {
+                console.log('done');
+                window.location.reload(true);
+            } else {
+
+                alert('error!')
+            }
+
+
+
+        });
+
+}
+
+function deleteRound(id) {
+    console.log('delete round')
+
+
+    fetch(DOMAIN + '/round/' + id, {
+        method: 'DELETE'
+    })
+        .then(response => {
+
+            if (response.status === 200) {
+                console.log('done');
+                window.location.reload(true);
+            } else {
+
+                alert('error!')
+            }
+
+
+
+        });
+
+}
+
+function deletePlayer(id) {
+    console.log('delete player')
+
+
+    fetch(DOMAIN + '/player/' + id, {
+        method: 'DELETE'
     })
         .then(response => {
 

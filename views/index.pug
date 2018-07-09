@@ -1,53 +1,94 @@
 html
     head
         title!= title
+
+        script(
+            src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.slim.js"
+        )
+
         script(
             src='/assets/dashboard.js'
         )
+        link(
+            rel='stylesheet'
+            href='/assets/style.css'
+            )
     body
-        h1 DASHBOARD
 
-        h2 Rounds
+        div#socket-status-message
+        pre#socket-status
+
 
         div
-            button Add Round
 
-        table
-            thead
-                tr
-                    th roundId
-                    th name
-                    th layout_url
-                    th players
-                    th next
-                    th running
-                    th voting
-                    th start
-                    th end
-                    th vote_start
-                    th vote_end
-                    th actions
-            tbody
-                each round in rounds
+            h1 DASHBOARD
+
+            h2 Rounds
+
+            div
+                a(href="/round-form") Add Round
+
+            table
+                thead
                     tr
-                        td= round._id
-                        td= round.name
-                        td= round.layout_url
-                        td= round.players
-                        td= round.next
-                        td= round.running
-                        td= round.voting
-                        td= round.start
-                        td= round.end
-                        td= round.vote_start
-                        td= round.vote_end
-                        td
-                            button(onclick="startRound('" + round._id + "')") Start
-                            button(onclick="stopRound('" + round._id + "')") Stop
-                            button(onclick="archiveRound(('" + round._id + "'))") Archive
-                            button(onclick="nextRound('" + round._id + "')") Set as next
-                            button(onclick="startVote(('" + round._id + "'))") start_vote_countdown
-                            button(onclick="showResults(('" + round._id + "'))") show_results
+                        th roundId
+                        th name
+                        th layout_url
+                        th players
+                        th next
+                        th running
+                        th voting
+                        th start
+                        th end
+                        th vote_start
+                        th vote_end
+                        th actions
+                tbody
+                    each round in rounds
+                        tr
+                            td= round._id
+                            td= round.name
+                            td= round.layout_url
+                            td= round.players
+                            td= round.next
+                            td= round.running
+                            td= round.voting
+                            td= round.start
+                            td= round.end
+                            td= round.vote_start
+                            td= round.vote_end
+                            td
+                                button(onclick="startRound('" + round._id + "')") Start
+                                button(onclick="stopRound('" + round._id + "')") Stop
+                                button(onclick="archiveRound(('" + round._id + "'))") Archive
+                                button(onclick="nextRound('" + round._id + "')") Set as next
+                                button(onclick="startVote(('" + round._id + "'))") start_vote_countdown
+                                button(onclick="showResults(('" + round._id + "'))") show_results
+                                button(
+                                    class='danger'
+                                    onclick="deleteRound(('" + round._id + "'))"
+                                    ) Delete Round
 
 
 
+            h2 Players
+
+            div
+                a(href="/player-form") Add Player
+
+            table
+                thead
+                    tr
+                        th player ID
+                        th Name
+                        th Actions
+                tbody
+                    each player in players
+                        tr
+                            td= player._id
+                            td= player.name
+                            td
+                                button(
+                                class='danger'
+                                onclick="deletePlayer(('" + player._id + "'))"
+                                ) Delete Player

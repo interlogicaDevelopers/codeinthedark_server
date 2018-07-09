@@ -1,0 +1,74 @@
+html
+    head
+        title!= title
+
+        script(
+            src='https://cdn.jsdelivr.net/npm/flatpickr'
+        )
+
+        script(
+            src='/assets/round-form.js'
+        )
+
+        link(
+            rel='stylesheet'
+            href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+        )
+
+    body
+
+        a(href="/admin") lista round
+
+        h1 Create round
+
+        form(
+            action="#"
+            name="create-form"
+            onsubmit="return formSubmit(event)"
+            )
+            div
+                label Name
+                input(
+                    type='text'
+                    name='name'
+                )
+            div
+                label Layout url
+                input(
+                    type="text"
+                    name="layout_url"
+                )
+
+            div
+                label players
+
+                - var n = 0
+                while n < 10
+                    select(
+                        name="players[" + n++ + "]"
+                    )
+                        option(value='')
+                        each player in players
+                            option(
+                                value=player._id
+                            )!= player.name
+
+            div
+                label start
+                input#start(name="start")
+
+            div
+                label end
+                input#end(name="end")
+
+            div
+                label vote_start
+                input#vote_start(name="vote_start")
+
+            div
+                label vote_end
+                input#vote_end(name="vote_end")
+
+
+            div
+                button  Create Round

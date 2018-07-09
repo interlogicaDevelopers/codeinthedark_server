@@ -5,7 +5,11 @@ const cors = require('cors');
 const aws = require('aws-sdk');
 const bodyParser = require('body-parser');
 const moment = require('moment');
-const auth = require('http-auth');
+
+let multer = require('multer');
+let formData = multer();
+
+// const auth = require('http-auth');
 
 // const basic = auth.basic({
 //     realm:"MyRealm",
@@ -252,11 +256,98 @@ app.set('view engine', 'pug');
 app.get('/admin', wrap(async (req, res) => {
 
     const rounds = await Round.find();
+    const players = await Player.find();
 
     res.render('index', {
         title: 'Admin DASHBOARD',
-        rounds
+        rounds,
+        players
     })
+
+}));
+
+app.get('/round-form', wrap(async (req, res) => {
+
+    const players = await Player.find();
+
+    console.log(players);
+
+    res.render('round-form', {
+        title: 'Create Round',
+        players
+    })
+
+}));
+
+
+app.post('/create-round', wrap(async (req, res) => {
+
+    const round = {
+        name: req.body.name,
+        layout_url: req.body.layout_url,
+        players: req.body.players,
+
+        running: false,
+        next: false,
+        voting: false,
+        showing_results: false,
+
+        start: req.body.start,
+        end: req.body.end,
+        vote_start: req.body.vote_start,
+        vote_end: req.body.vote_end,
+    };
+
+    console.log({round})
+
+    const r = new Round(round);
+    await r.save();
+
+    res.status(200);
+    res.end('Round created');
+
+}));
+
+app.get('/player-form', wrap(async (req, res) => {
+
+    res.render('player-form', {
+        title: 'Create Player'
+    })
+
+}));
+
+app.post('/create-player', wrap(async (req, res) => {
+
+    const player = {
+        name: req.body.name
+    };
+
+    console.log({player})
+
+    const p = new Player(player);
+    await p.save();
+
+    res.status(200);
+    res.end('Player created');
+
+}));
+
+
+app.delete('/round/:roundId', wrap(async (req, res) => {
+
+    await Round.deleteOne({_id: req.params.roundId});
+
+    res.status(200);
+    res.end('Round deleted');
+
+}));
+
+app.delete('/player/:playerId', wrap(async (req, res) => {
+
+    await Player.deleteOne({_id: req.params.playerId});
+
+    res.status(200);
+    res.end('Player deleted');
 
 }));
 

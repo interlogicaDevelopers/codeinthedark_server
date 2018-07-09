@@ -1,0 +1,30 @@
+html
+    head
+        title!= title
+
+        script(
+        src='/assets/player-form.js'
+        )
+
+
+    body
+
+        a(href="/admin") lista round
+
+        h1 Create player
+
+        form(
+        action="#"
+        name="create-player"
+        onsubmit="return formSubmit(event)"
+        )
+            div
+                label Name
+                input(
+                type='text'
+                name='name'
+                )
+
+
+            div
+                button  Create Player
