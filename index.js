@@ -7,10 +7,10 @@ const bodyParser = require('body-parser');
 const moment = require('moment');
 const auth = require('http-auth');
 
-const basic = auth.basic({
-    realm:"MyRealm",
-    file: __dirname + "/data/sec"
-});
+// const basic = auth.basic({
+//     realm:"MyRealm",
+//     file: __dirname + "/data/sec"
+// });
 
 const app = express();
 app.use(cors());
