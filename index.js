@@ -246,7 +246,7 @@ app.use(express.static('public'));
 
 // DASHBOARD
 
-app.use(auth.connect(basic));
+// app.use(auth.connect(basic));
 app.set('view engine', 'pug');
 
 app.get('/admin', wrap(async (req, res) => {
