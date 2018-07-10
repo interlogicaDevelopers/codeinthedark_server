@@ -4,10 +4,10 @@ var DOMAIN = '';
 
 document.addEventListener('DOMContentLoaded', function() {
     initSocket();
-})
+});
 
 function initSocket() {
-    const endpoint = 'http://localhost:3000';
+    const endpoint = 'http://0.0.0.0:3000';
 
     const socket = io(endpoint);
 
