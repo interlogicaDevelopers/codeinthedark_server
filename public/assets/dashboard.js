@@ -7,16 +7,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initSocket() {
-    const endpoint = 'http://0.0.0.0:3000';
+    const endpoint = '/';
 
     const socket = io(endpoint);
 
     socket.on('connect', () => {
         console.log('connect')
-    })
+    });
 
-    const dataBox = document.querySelector('#socket-status')
-    const typeBox = document.querySelector('#socket-status-message')
+    const dataBox = document.querySelector('#socket-status');
+    const typeBox = document.querySelector('#socket-status-message');
 
     socket.on('message', (message) => {
         dataBox.innerHTML = JSON.stringify(message.data);
