@@ -1,0 +1,23 @@
+{
+
+    "apps": [
+
+        {
+            "name": "CodeInTheDark Server",
+            "script": "index.js",
+            "env": {
+
+            },
+            "env_production": {
+                "NODE_ENV": "production"
+            },
+            "watch": true,
+            "ignore_watch": ["node_modules", "public/layouts"],
+            "watch_options": {
+                "followSymlinks": false
+            }
+        }
+
+
+    ]
+}
