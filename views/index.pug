@@ -38,6 +38,8 @@ html
                         th next
                         th running
                         th voting
+                        th showing results
+                        th receiving layouts
                         th start
                         th end
                         th vote_start
@@ -53,6 +55,8 @@ html
                             td= round.next
                             td= round.running
                             td= round.voting
+                            td= round.showing_results
+                            td= round.receiving_layouts
                             td= round.start
                             td= round.end
                             td= round.vote_start
@@ -64,6 +68,7 @@ html
                                 button(onclick="nextRound('" + round._id + "')") Set as next
                                 button(onclick="startVote(('" + round._id + "'))") start_vote_countdown
                                 button(onclick="showResults(('" + round._id + "'))") show_results
+                                button(onclick="receiveLayouts(('" + round._id + "'))") receive layouts
                                 button(
                                     class='danger'
                                     onclick="deleteRound(('" + round._id + "'))"

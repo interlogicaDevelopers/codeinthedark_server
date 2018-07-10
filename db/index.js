@@ -25,6 +25,7 @@ const roundSchema = new mongoose.Schema({
     running: Boolean,
     voting: Boolean,
     showing_results: Boolean,
+    receiving_layouts: Boolean,
     start: Date,
     end: Date,
     vote_start: Date,
@@ -40,7 +41,7 @@ const voteSchema = new mongoose.Schema({
     voter: mongoose.Schema.Types.Mixed
 });
 
-const Vote = mongoose.model('Vote', roundSchema);
+const Vote = mongoose.model('Vote', voteSchema);
 
 mongoose.connect('mongodb://' + process.env.MONGOUSER + ':' + process.env.MONGOPSW + '@' + process.env.MONGOHOST, {
     dbName: 'citd'

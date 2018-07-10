@@ -6,6 +6,25 @@ https://apicitd.interlogica.it
 
 ## CONTENT API
 
+#### GET /config
+Ottiene il json di configurazione con i dati di navigazione.
+Es:
+
+```javascript
+{
+    stage: 'dev',
+    navigation: [
+        {
+            label: 'sponsor',
+            icon: 'icon-sponsor.png',
+            url: '/content/sponsor.html'
+        },
+        ...
+    ]
+}
+```
+
+
 #### GET /round
 Lista di round che popoleremo durante l'evento
 
@@ -80,7 +99,7 @@ Message format
 ```javascript
 {
     type: 'ROUND_COUNTDOWN'
-    data: {round: {}, missing: ''}
+    data: {round: _id, missing: '', time: 0}
 }
 ```
 
@@ -88,7 +107,7 @@ Message format
 ```javascript
 {
     type: 'ROUND_END_COUNTDOWN'
-    data: {round: {}, missing: ''}
+    data: {round: _id, missing: '', time: 0}
 }
 ```
 
@@ -97,7 +116,15 @@ Message format
 ```javascript
 {
     type: 'VOTE_COUNTDOWN',
-    data: {round: {}, missing: ''}
+    data: {round: _id, missing: '', time: 0}
+}
+```
+
+#### RECEIVING_LAYOUTS
+```javascript
+{
+    type: 'RECEIVING_LAYOUTS',
+    data: {round: _id}
 }
 ```
 

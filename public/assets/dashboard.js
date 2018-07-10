@@ -141,6 +141,29 @@ function startVote(id) {
 }
 
 
+function receiveLayouts(id) {
+    console.log('receive layouts', id)
+
+    fetch(DOMAIN + '/round/receiveLayouts/' + id, {
+        method: 'POST'
+    })
+        .then(response => {
+
+            if (response.status === 200) {
+                console.log('done');
+                window.location.reload(true);
+            } else {
+
+                alert('error!')
+            }
+
+
+
+        });
+
+}
+
+
 function showResults(id) {
     console.log('show results', id)
 

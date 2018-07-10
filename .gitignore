@@ -60,3 +60,5 @@ typings/
 .idea
 
 deploy.sh
+/public/layouts/*
+ecosystem.config.js
