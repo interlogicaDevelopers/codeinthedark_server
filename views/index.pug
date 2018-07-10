@@ -50,8 +50,14 @@ html
                         tr
                             td= round._id
                             td= round.name
-                            td= round.layout_url
-                            td= round.players
+                            td
+                                a(href=round.layout_url)
+                                    img(src=round.layout_url width="100")
+
+                            td
+                                each player in round.players
+                                    span= player.name
+                                    br
                             td= round.next
                             td= round.running
                             td= round.voting
