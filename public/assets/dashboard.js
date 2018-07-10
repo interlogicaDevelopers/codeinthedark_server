@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initSocket();
 });
 
+let hilighted = '';
+
 function initSocket() {
     const endpoint = '/';
 
@@ -21,6 +23,21 @@ function initSocket() {
     socket.on('message', (message) => {
         dataBox.innerHTML = JSON.stringify(message.data);
         typeBox.innerHTML = message.type;
+
+        hilighted = '';
+
+
+        console.log(message.data.round)
+        if (message.data.round) {
+            hilighted = message.data.round;
+        }
+
+        const h = document.getElementById(hilighted)
+        if (h) {
+            h.classList.add('current')
+        }
+
+
     })
 }
 

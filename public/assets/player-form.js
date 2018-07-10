@@ -21,9 +21,10 @@ function formSubmit(e) {
     })
         .then(response => {
             if (response.status === 200) {
-                console.log('OK!')
+                console.log('OK!');
+                window.location = '/admin';
             } else {
-                alert('ERROR')
+                alert('ERROR');
                 console.log(response.body)
             }
         })

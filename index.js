@@ -195,6 +195,8 @@ io.on('connection', (socket) => {
 });
 
 
+const leftPadZero = val => val.toString().length === 2 ? val.toString() : '0' + val.toString()
+
 const checkRounds = async () => {
 
     const nextRound = await Round.findOne({
@@ -205,7 +207,7 @@ const checkRounds = async () => {
     let duration;
 
     if (nextRound) {
-        console.log('FOUND NEXT ROUND');
+        console.log('SENDING NEXT ROUND');
 
         missing = moment(nextRound.start).diff(moment());
         duration = moment.duration(missing);
@@ -213,9 +215,9 @@ const checkRounds = async () => {
         io.sockets.emit('message', {
             type: 'ROUND_COUNTDOWN',
             data: {
-                round: nextRound, 
+                round: nextRound._id,
                 time: missing,
-                missing: duration.minutes() + ':' + duration.seconds()
+                missing: leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds())
             }
         });
 
@@ -227,7 +229,7 @@ const checkRounds = async () => {
     });
 
     if(runningRound) {
-        console.log('FOUND RUNNING ROUND');
+        console.log('SENDING RUNNING ROUND');
 
         missing = moment(runningRound.end).diff(moment());
         duration = moment.duration(missing);
@@ -235,9 +237,9 @@ const checkRounds = async () => {
         io.sockets.emit('message', {
             type: 'ROUND_END_COUNTDOWN',
             data: {
-                round: runningRound, 
+                round: runningRound._id,
                 time: missing,
-                missing: duration.minutes() + ':' + duration.seconds()
+                missing: leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds())
             }
         });
 
@@ -249,7 +251,7 @@ const checkRounds = async () => {
     });
 
     if(runningVote) {
-        console.log('FOUND VOTE RUNNING');
+        console.log('SENDING VOTE RUNNING');
 
         missing = moment(runningVote.end).diff(moment());
         duration = moment.duration(missing);
@@ -257,9 +259,9 @@ const checkRounds = async () => {
         io.sockets.emit('message', {
             type: 'VOTE_COUNTDOWN',
             data: {
-                round: runningVote, 
+                round: runningVote._id,
                 time: missing,
-                missing: duration.minutes() + ':' + duration.seconds()
+                missing: leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds())
             }
         });
 
@@ -271,12 +273,12 @@ const checkRounds = async () => {
     });
 
     if(showingResultsRound) {
-        console.log('FOUND ROUND SHOWING RESULTS');
+        console.log('SENDING ROUND SHOWING RESULTS');
 
         io.sockets.emit('message', {
             type: 'SHOWING_RESULTS',
             data: {
-                round: showingResultsRound
+                round: showingResultsRound._id
             }
         });
 
@@ -288,12 +290,12 @@ const checkRounds = async () => {
     });
 
     if(receivingLayoutsRound ) {
-        console.log('FOUND RECEIVING LAYOUTS ROUND');
+        console.log('SENDING RECEIVING LAYOUTS ROUND');
 
         io.sockets.emit('message', {
             type: 'RECEIVING_RESULTS',
             data: {
-                round: receivingLayoutsRound
+                round: receivingLayoutsRound._id
             }
         });
 
