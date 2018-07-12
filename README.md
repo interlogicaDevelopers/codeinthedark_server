@@ -136,10 +136,12 @@ Message format
 }
 ```
 
-#### FORCE_DATA_REFRESH 
-per forzare il refresh dei dati su app quando inseriamo i player per il prossimo round????
+#### SHOWING RESULTS
 ```javascript
 {
-    type: 'FORCE_DATA_REFRESH'
+    type: 'SHOWING_RESULTS',
+    data: {
+        round: _id
+    }
 }
 ```
