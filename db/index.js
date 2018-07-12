@@ -43,6 +43,15 @@ const voteSchema = new mongoose.Schema({
 
 const Vote = mongoose.model('Vote', voteSchema);
 
+
+const eventSchema = new mongoose.Schema({
+    event_start: Date,
+    running_countdown: Boolean,
+    event_name: String
+});
+
+const Event = mongoose.model('Event', eventSchema);
+
 mongoose.connect('mongodb://' + process.env.MONGOUSER + ':' + process.env.MONGOPSW + '@' + process.env.MONGOHOST, {
     dbName: 'citd'
 });
@@ -50,7 +59,8 @@ mongoose.connect('mongodb://' + process.env.MONGOUSER + ':' + process.env.MONGOP
 module.exports = {
     Player,
     Round,
-    Vote
+    Vote,
+    Event
 };
 
 

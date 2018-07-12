@@ -30,7 +30,7 @@ app.use(bodyParser.json());
 
 
 
-const {Player, Round, Vote} = require('./db');
+const {Player, Round, Vote, Event} = require('./db');
 
 app.get('/', wrap(async (req, res) => {
     res.send('WELCOME')
@@ -145,7 +145,16 @@ app.post('/round/receiveLayouts/:roundId', wrap(async (req, res) => {
     res.end();
 }));
 
+app.post('/event/stopCountDown', wrap(async(req, res) => {
 
+    await Event.update({running_countdown: true}, {
+        running_countdown: false
+    });
+
+    res.status(200);
+    res.end();
+
+}));
 
 
 app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
@@ -199,12 +208,35 @@ const leftPadZero = val => val.toString().length === 2 ? val.toString() : '0' + 
 
 const checkRounds = async () => {
 
+    let missing;
+    let duration;
+
+    const countdownRunningEvent = await Event.findOne({
+        running_countdown: true
+    });
+
+    if (countdownRunningEvent) {
+        console.log("EVENT COUNTDOWN");
+
+        missing = moment(countdownRunningEvent.event_start).diff(moment());
+        duration = moment.duration(missing);
+
+        io.sockets.emit('message', {
+            type: 'EVENT_COUNTDOWN',
+            data: {
+                time: missing,
+                missing: duration.months()  + 'm ' +duration.days() + 'd ' + duration.hours() + 'h ' + leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds())
+            }
+        });
+
+        return;
+
+    }
+
+
     const nextRound = await Round.findOne({
         next: true
     });
-
-    let missing;
-    let duration;
 
     if (nextRound) {
         console.log('SENDING NEXT ROUND');

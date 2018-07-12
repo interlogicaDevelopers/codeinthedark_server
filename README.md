@@ -95,6 +95,14 @@ Message format
 
 ### Message types
 
+#### EVENT COUNTDOWN (quanto manca all'evento)
+```javascript
+{
+    type: 'EVENT_COUNTDOWN'
+    data: {missing: '', time: 0}
+}
+```
+
 #### ROUND COUNTDOWN (quanto manca al prossimo round)
 ```javascript
 {

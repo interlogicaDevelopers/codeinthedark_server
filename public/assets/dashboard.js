@@ -180,6 +180,29 @@ function receiveLayouts(id) {
 
 }
 
+function stopEventCountdown(id) {
+    console.log('stop event countdown', id)
+
+    fetch(DOMAIN + '/event/stopCountdown', {
+        method: 'POST'
+    })
+        .then(response => {
+
+            if (response.status === 200) {
+                console.log('done');
+                window.location.reload(true);
+            } else {
+
+                alert('error!')
+            }
+
+
+
+        });
+
+}
+
+
 
 function showResults(id) {
     console.log('show results', id)
