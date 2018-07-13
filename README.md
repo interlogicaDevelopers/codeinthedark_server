@@ -1,6 +1,4 @@
 # Servizi Backend per APP mobile
-Esporremo un backend su un sottodominio interlogica, probabilmente
-https://apicitd.interlogica.it
 
 ---
 
