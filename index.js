@@ -145,6 +145,17 @@ app.post('/round/receiveLayouts/:roundId', wrap(async (req, res) => {
     res.end();
 }));
 
+app.post('/event/startCountDown', wrap(async(req, res) => {
+
+    await Event.update({running_countdown: false}, {
+        running_countdown: true
+    });
+
+    res.status(200);
+    res.end();
+
+}));
+
 app.post('/event/stopCountDown', wrap(async(req, res) => {
 
     await Event.update({running_countdown: true}, {

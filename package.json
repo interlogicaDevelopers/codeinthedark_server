@@ -1,7 +1,7 @@
 {
   "name": "codeinthedark_server",
   "version": "1.0.0",
-  "description": "Esporremo un backend su un sottodominio interlogica, probabilmente https://apicitd.interlogica.it",
+  "description": "CITD Server",
   "main": "index.js",
   "dependencies": {
     "async-middleware": "^1.2.1",
