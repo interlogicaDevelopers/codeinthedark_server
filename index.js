@@ -478,22 +478,22 @@ app.get('/config', wrap(async (req, res) => {
         navigation: [
             {
                 label: 'About Us',
-                icon: 'about-icon.png',
+                icon: '/assets/icons/icon_aboutus.png',
                 url:  '/content/about.html'
             },
             {
                 label: 'Location',
-                icon: 'location-icon.png',
+                icon: '/assets/icons/icon_location.png',
                 url:  '/content/location.html'
             },
             {
                 label: 'Gallery Round',
-                icon: 'gallery-icon.png',
+                icon: '/assets/icons/icon_gallery.png',
                 url: '/content/gallery.html'
             },
             {
                 label: 'Sponsor',
-                icon: 'sponsor-icon.png',
+                icon: '/assets/icons/icon_sponsor.png',
                 url: '/content/sponsor.html'
             }
         ]
