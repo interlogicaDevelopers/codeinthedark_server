@@ -507,6 +507,7 @@ app.get('/config', wrap(async (req, res) => {
 
 app.post('/get-layout', wrap(async (req, res) => {
 
+
     const round = await Round.find({
         receiving_layouts: true
     });
@@ -530,25 +531,43 @@ app.post('/get-layout', wrap(async (req, res) => {
     }
 
     const fileName = dirName + '/' + req.body.player + '.html';
-    fs.writeFileSync(fileName, req.body.html);
 
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+    const width = 1920;
+    const height = 1080;
 
-    const previewUrl = '/layouts/' + round[0]._id + '/' + req.body.player + '.html';
+    try {
+        fs.writeFileSync(fileName, req.body.html);
 
-    await page.goto('http://localhost:3000' + previewUrl);
-    await page.screenshot({
-        path: dirName + '/' + req.body.player + '.png',
-        clip: {
-            x: 0,
-            y: 0,
-            width: 1920,
-            height: 1080
-        }
-    });
+        const browser = await puppeteer.launch({
+            args: [
+                `--window-size=${ width },${ height }`
+            ]
+        });
+        const page = await browser.newPage();
+        page.setViewport({ width, height })
 
-    await browser.close();
+        const previewUrl = '/layouts/' + round[0]._id + '/' + req.body.player + '.html';
+
+
+        await page.goto('http://localhost:3000' + previewUrl);
+        await page.screenshot({
+            path: dirName + '/' + req.body.player + '.png',
+            clip: {
+                x: 0,
+                y: 0,
+                width,
+                height
+            }
+        });
+
+        await browser.close();
+
+    } catch(err) {
+
+        res.status(500);
+        res.send(err);
+        res.end();
+    }
 
     res.status(200);
     res.end()
