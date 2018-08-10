@@ -61,4 +61,5 @@ typings/
 
 deploy.sh
 /public/layouts/*
+!/public/layouts/index.html
 ecosystem.config.js
