@@ -539,6 +539,7 @@ app.post('/get-layout', wrap(async (req, res) => {
         fs.writeFileSync(fileName, req.body.html);
 
         const browser = await puppeteer.launch({
+            headless: true,
             args: [
                 `--window-size=${ width },${ height }`
             ]
