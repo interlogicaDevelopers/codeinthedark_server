@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const aws = require('aws-sdk');
 const bodyParser = require('body-parser');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const fs = require('fs');
 
 const puppeteer = require('puppeteer');
@@ -215,7 +215,7 @@ io.on('connection', (socket) => {
 });
 
 
-const leftPadZero = val => val.toString().length === 2 ? val.toString() : '0' + val.toString()
+const leftPadZero = val => val.toString().length === 2 ? val.toString() : '0' + val.toString();
 
 const checkRounds = async () => {
 
@@ -229,7 +229,7 @@ const checkRounds = async () => {
     if (countdownRunningEvent) {
         console.log("EVENT COUNTDOWN");
 
-        missing = moment(countdownRunningEvent.event_start).diff(moment());
+        missing = moment(countdownRunningEvent.event_start).diff(moment.tz('Europe/Rome'));
         duration = moment.duration(missing);
 
         io.sockets.emit('message', {
@@ -252,15 +252,18 @@ const checkRounds = async () => {
     if (nextRound) {
         console.log('SENDING NEXT ROUND');
 
-        missing = moment(nextRound.start).diff(moment());
+        missing = moment(nextRound.start).diff(moment.tz('Europe/Rome'));
         duration = moment.duration(missing);
+
+
+        const missingString = duration > 0 ? leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds()) : '00:00'
 
         io.sockets.emit('message', {
             type: 'ROUND_COUNTDOWN',
             data: {
                 round: nextRound._id,
-                time: missing,
-                missing: leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds())
+                time: Math.floor(duration.as('seconds')),
+                missing: missingString
             }
         });
 
@@ -274,15 +277,22 @@ const checkRounds = async () => {
     if(runningRound) {
         console.log('SENDING RUNNING ROUND');
 
-        missing = moment(runningRound.end).diff(moment());
+        missing = moment(runningRound.end).diff(moment.tz('Europe/Rome'));
         duration = moment.duration(missing);
+        let roundLength = moment(runningRound.end).diff(moment(runningRound.start));
+        let roundDuration = moment.duration(roundLength);
+
+        let timer = Math.ceil(duration / (roundDuration / 60));
+
+        const missingString = duration > 0 ? leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds()) : '00:00'
 
         io.sockets.emit('message', {
             type: 'ROUND_END_COUNTDOWN',
             data: {
                 round: runningRound._id,
-                time: missing,
-                missing: leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds())
+                time: Math.floor(duration.as('seconds')),
+                missing: missingString,
+                countdownStep: timer
             }
         });
 
@@ -296,15 +306,17 @@ const checkRounds = async () => {
     if(runningVote) {
         console.log('SENDING VOTE RUNNING');
 
-        missing = moment(runningVote.end).diff(moment());
+        missing = moment(runningVote.vote_end).diff(moment.tz('Europe/Rome'));
         duration = moment.duration(missing);
+
+        const missingString = duration > 0 ? leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds()) : '00:00'
 
         io.sockets.emit('message', {
             type: 'VOTE_COUNTDOWN',
             data: {
                 round: runningVote._id,
-                time: missing,
-                missing: leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds())
+                time: Math.floor(duration.as('seconds')),
+                missing: missingString
             }
         });
 
@@ -411,10 +423,10 @@ app.post('/create-round', wrap(async (req, res) => {
         voting: false,
         showing_results: false,
 
-        start: req.body.start,
-        end: req.body.end,
-        vote_start: req.body.vote_start,
-        vote_end: req.body.vote_end,
+        start: moment.tz(req.body.start, 'Europe/Rome'),
+        end: moment.tz(req.body.end, 'Europe/Rome'),
+        vote_start: moment.tz(req.body.vote_start, 'Europe/Rome'),
+        vote_end: moment.tz(req.body.vote_end, 'Europe/Rome'),
     };
 
     console.log({round});
