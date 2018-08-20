@@ -177,10 +177,10 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
     });
 
     if (foundVote.length !== 0) {
+        res.status(500);
         res.send({
             message: 'Already voted'
         });
-        res.status(500);
         res.end();
         return;
     }
