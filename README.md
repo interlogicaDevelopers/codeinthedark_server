@@ -11,6 +11,10 @@ Es:
 ```javascript
 {
     stage: 'dev',
+    register: {
+        page: '/content/register.html',
+        endpoint: '/user'
+    },
     navigation: [
         {
             label: 'sponsor',
@@ -22,6 +26,14 @@ Es:
 }
 ```
 
+#### POST /user
+Aggiunge un utente a database, su aspetta un json nel seguente formato
+```javascript
+{
+    uuid: "uuid-device",
+    ... [altri dati]
+}
+```
 
 #### GET /round
 Lista di round che popoleremo durante l'evento
