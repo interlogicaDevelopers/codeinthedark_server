@@ -3,64 +3,76 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
+    <link href="https://fonts.googleapis.com/css?family=Space+Mono" rel="stylesheet">
+
     <link rel="stylesheet" href="/assets/content.css">
+
 
 </head>
 
-<body>
 
+<div class="text-center">
     <h3>Chi sei?</h3>
 
-    <p>Qualche semplice info su di te prima di cominciare</p>
+    <p>Qualche info su di te prima di cominciare</p>
+
+</div>
+
+<div class="flex-centered">
+
+    <div class="field-container  margin-top-4x">
+
+        <input class="field-input" placeholder=" " name="job" id="job" type="text">
+        <label class="field-placeholder" for="job">Di cosa ti occupi?</label>
+    </div>
+
+</div>
+
+<div class="flex-centered">
+
+    <div class="field-container margin-top-4x">
+
+        <input class="field-input" placeholder=" " name="email" id="email" type="text">
+        <label class="field-placeholder" for="email">Indirizzo email</label>
+    </div>
+</div>
+
+<div class="text-center margin-top-4x">
+    <a id="submit-link" href="app://">Entra</a>
+</div>
 
 
-        <div class="field-container  margin-top-4x">
-
-            <input class="field-input" placeholder=" " name="job" id="job" type="text">
-            <label class="field-placeholder" for="job">Di cosa ti occupi?</label>
-        </div>
-
-        <div class="field-container margin-top-4x">
-
-            <input class="field-input" placeholder=" " name="email" id="email" type="text">
-            <label class="field-placeholder" for="email">Indirizzo email</label>
-        </div>
-
-        <div class="text-center margin-top-4x">
-            <a id="submit-link" href="">Entra</a>
-        </div>
+<script>
 
 
-    <script>
+    var link = document.getElementById('submit-link');
 
+    var inputs = document.getElementsByClassName('input');
 
-        var link = document.getElementById('submit-link');
+    var props = {};
 
-        var inputs = document.getElementsByClassName('input');
+    for (var i = 0; i < inputs.length; i++) {
 
-        var props = {};
+        inputs[i].addEventListener('input', function () {
+            props[this.name] = this.value;
 
-        for(var i = 0; i < inputs.length; i++) {
+            var queryString = serialize(props);
+            link.href = 'app://' + queryString;
 
-            inputs[i].addEventListener('input', function() {
-                props[this.name] = this.value;
+        })
+    }
 
-                var queryString = serialize(props);
-                link.href = 'app://' + queryString;
+    var serialize = function (obj) {
+        var str = [];
+        for (var p in obj)
+            if (obj.hasOwnProperty(p)) {
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            }
+        return str.join("&");
+    }
 
-            })
-        }
-
-        var serialize = function(obj) {
-            var str = [];
-            for (var p in obj)
-                if (obj.hasOwnProperty(p)) {
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                }
-            return str.join("&");
-        }
-
-    </script>
+</script>
 
 </body>
 </html>

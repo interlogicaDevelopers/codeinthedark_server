@@ -1,4 +1,5 @@
 body {
+    font-family: 'Space Mono', monospace;
     background: #000;
     color: white;
 }
@@ -10,6 +11,12 @@ a {
     display: inline-block;
     background: white;
     color: #000;
+}
+
+.flex-centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
