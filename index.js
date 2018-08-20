@@ -170,15 +170,41 @@ app.post('/event/stopCountDown', wrap(async(req, res) => {
 
 app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
 
+
+    const foundVote = await Vote.find({
+        round: req.params.roundId,
+        uuid: req.body.uuid
+    });
+
+    if (foundVote.length !== 0) {
+        res.send({
+            message: 'Already voted'
+        });
+        res.status(500);
+        res.end();
+        return;
+    }
+
+
     const vote = new Vote({
         vote_for: req.params.playerId,
         round: req.params.roundId,
-        voter: req.body
+        uuid: req.body.uuid,
+        voter: req.body.voter
     });
     await vote.save();
 
-    res.send(200);
-    
+    res.send({
+        message: 'Vote OK'
+    });
+    res.status(200);
+    res.end()
+
+
+
+
+
+
 }));
 
 app.get('/vote/:roundId', wrap(async (req, res) => {
@@ -282,7 +308,7 @@ const checkRounds = async () => {
         let roundLength = moment(runningRound.end).diff(moment(runningRound.start));
         let roundDuration = moment.duration(roundLength);
 
-        let timer = Math.ceil(duration / (roundDuration / 60));
+        let timer = Math.ceil(duration / (roundDuration / 65));
 
         const missingString = duration > 0 ? leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds()) : '00:00'
 

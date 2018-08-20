@@ -38,7 +38,8 @@ const Round = mongoose.model('Round', roundSchema);
 const voteSchema = new mongoose.Schema({
     vote_for: mongoose.Schema.Types.ObjectId,
     round: mongoose.Schema.Types.ObjectId,
-    voter: mongoose.Schema.Types.Mixed
+    voter: mongoose.Schema.Types.Mixed,
+    uuid: String
 });
 
 const Vote = mongoose.model('Vote', voteSchema);
