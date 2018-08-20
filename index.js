@@ -58,7 +58,8 @@ app.post('/round/start/:roundId', wrap(async (req, res) => {
         running: true,
         next: false,
         receiving_layouts: false,
-        showing_results: false
+        showing_results: false,
+        waiting: false
     });
 
     res.status(200);
@@ -72,7 +73,8 @@ app.post('/round/next/:roundId', wrap(async (req, res) => {
         running: false,
         next: true,
         receiving_layouts: false,
-        showing_results: false
+        showing_results: false,
+        waiting: false
     });
 
     res.status(200);
@@ -86,7 +88,8 @@ app.post('/round/stop/:roundId', wrap(async (req, res) => {
         running: false,
         next: false,
         receiving_layouts: false,
-        showing_results: false
+        showing_results: false,
+        waiting: false
     });
 
     res.status(200);
@@ -99,7 +102,8 @@ app.post('/round/archive/:roundId', wrap(async (req, res) => {
         running: false,
         next: false,
         receiving_layouts: false,
-        showing_results: false
+        showing_results: false,
+        waiting: false
     });
 
     res.status(200);
@@ -126,7 +130,8 @@ app.post('/round/showResults/:roundId', wrap(async (req, res) => {
         running: false,
         next: false,
         receiving_layouts: false,
-        showing_results: true
+        showing_results: true,
+        waiting: false
     });
 
     res.status(200);
@@ -140,7 +145,23 @@ app.post('/round/receiveLayouts/:roundId', wrap(async (req, res) => {
         running: false,
         next: false,
         receiving_layouts: true,
-        showing_results: false
+        showing_results: false,
+        waiting: false
+    });
+
+    res.status(200);
+    res.end();
+}));
+
+app.post('/round/waiting/:roundId', wrap(async (req, res) => {
+
+    await Round.update({_id: req.params.roundId}, {
+        voting: false,
+        running: false,
+        next: false,
+        receiving_layouts: false,
+        showing_results: false,
+        waiting: true
     });
 
     res.status(200);
@@ -168,7 +189,6 @@ app.post('/event/stopCountDown', wrap(async(req, res) => {
     res.end();
 
 }));
-
 
 app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
 
@@ -400,6 +420,22 @@ const checkRounds = async () => {
                 missing: "00:00",
                 time: 0,
                 round: receivingLayoutsRound._id
+            }
+        });
+
+    }
+
+    const waitingRound = await Round.findOne({
+        waiting: true
+    });
+
+    if(waitingRound ) {
+        console.log('SENDING WAITING ROUND');
+
+        io.sockets.emit('message', {
+            type: 'WAITING',
+            data: {
+                round: waitingRound._id
             }
         });
 

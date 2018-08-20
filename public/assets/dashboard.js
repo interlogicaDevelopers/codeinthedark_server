@@ -180,6 +180,31 @@ function receiveLayouts(id) {
 
 }
 
+
+function waiting(id) {
+    console.log('waiting', id)
+
+    fetch(DOMAIN + '/round/waiting/' + id, {
+        method: 'POST'
+    })
+        .then(response => {
+
+            if (response.status === 200) {
+                console.log('done');
+                window.location.reload(true);
+            } else {
+
+                alert('error!')
+            }
+
+
+
+        });
+
+}
+
+
+
 function startEventCountdown(id) {
     console.log('start event countdown', id);
 

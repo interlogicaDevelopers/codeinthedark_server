@@ -30,7 +30,9 @@ const roundSchema = new mongoose.Schema({
     end: Date,
     vote_start: Date,
     vote_end: Date,
-    last: Boolean
+    last: Boolean,
+    waiting: Boolean,
+    assets: [mongoose.Schema.Types.Mixed]
 });
 
 const Round = mongoose.model('Round', roundSchema);

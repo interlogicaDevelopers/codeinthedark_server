@@ -11,8 +11,12 @@ html
         )
         link(
             rel='stylesheet'
-            href='/assets/style.css'
+            href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'
             )
+        link(
+            rel='stylesheet'
+            href='/assets/style.css'
+        )
     body
 
         div#socket-status-message
@@ -44,6 +48,7 @@ html
                         th voting
                         th showing results
                         th receiving layouts
+                        th waiting
                         th start
                         th end
                         th vote_start
@@ -67,6 +72,7 @@ html
                             td= round.voting
                             td= round.showing_results
                             td= round.receiving_layouts
+                            td= round.waiting
                             td= round.start
                             td= round.end
                             td= round.vote_start
@@ -79,6 +85,7 @@ html
                                 button(onclick="startVote(('" + round._id + "'))") start_vote_countdown
                                 button(onclick="showResults(('" + round._id + "'))") show_results
                                 button(onclick="receiveLayouts(('" + round._id + "'))") receive layouts
+                                button(onclick="waiting(('" + round._id + "'))") waiting
                                 button(
                                     class='danger'
                                     onclick="deleteRound(('" + round._id + "'))"
