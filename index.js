@@ -25,6 +25,8 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const wrap = require('async-middleware').wrap;
 
+const DOMAIN = 'http://admin.codeinthedark.interlogica.it:3000';
+
 
 app.use(bodyParser.json()); 
 
@@ -568,7 +570,8 @@ app.post('/get-layout', wrap(async (req, res) => {
 
 
     const round = await Round.find({
-        receiving_layouts: true
+        // receiving_layouts: true
+        voting: true
     });
 
     console.log({round});
@@ -604,7 +607,7 @@ app.post('/get-layout', wrap(async (req, res) => {
             ]
         });
         const page = await browser.newPage();
-        page.setViewport({ width, height })
+        page.setViewport({ width, height });
 
         const previewUrl = '/layouts/' + round[0]._id + '/' + req.body.player + '.html';
 
@@ -622,22 +625,19 @@ app.post('/get-layout', wrap(async (req, res) => {
 
         await browser.close();
 
+        const players = _.cloneDeep(round[0].players);
+        const player = players.find(p => p.name === req.body.player);
+        player.preview_url = DOMAIN + previewUrl;
 
-        const players = _.deepClone(round.players);
-        const player = players.find(p => p.name === 'req.body.player')
-        player.preview_url = previewUrl;
-
-        // Round.update({_id: round[0]._id}, {
-        //     $set: {
-        //         players: plauers
-        //     }
-        // })
-
-
+        await Round.findByIdAndUpdate(round[0]._id, {
+            $set: {
+                players: players
+            }
+        })
 
 
     } catch(err) {
-
+        console.error(err)
         res.status(500);
         res.send(err);
         res.end();
