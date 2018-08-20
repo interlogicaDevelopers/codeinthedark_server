@@ -23,7 +23,7 @@
 
     <div class="field-container  margin-top-4x">
 
-        <input class="field-input" placeholder=" " name="job" id="job" type="text">
+        <input class="input field-input" placeholder=" " name="job" id="job" type="text">
         <label class="field-placeholder" for="job">Di cosa ti occupi?</label>
     </div>
 
@@ -33,7 +33,7 @@
 
     <div class="field-container margin-top-4x">
 
-        <input class="field-input" placeholder=" " name="email" id="email" type="text">
+        <input class="input field-input" placeholder=" " name="email" id="email" type="text">
         <label class="field-placeholder" for="email">Indirizzo email</label>
     </div>
 </div>
@@ -58,6 +58,7 @@
             props[this.name] = this.value;
 
             var queryString = serialize(props);
+            console.log({queryString})
             link.href = 'app://' + queryString;
 
         })

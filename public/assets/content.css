@@ -1,6 +1,7 @@
 body {
     font-family: 'Space Mono', monospace;
     background: #000;
+    background-image: url('./sfondo.jpg');
     color: white;
 }
 
@@ -57,7 +58,7 @@ a {
 
 input[type="text"].field-input {
     color: #fff;
-    background: #000;
+    background: transparent;
     border: none;
     padding: 5px;
     margin-top: 20px;
