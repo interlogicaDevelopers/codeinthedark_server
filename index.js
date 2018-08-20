@@ -610,6 +610,7 @@ app.post('/get-layout', wrap(async (req, res) => {
         page.setViewport({ width, height });
 
         const previewUrl = '/layouts/' + round[0]._id + '/' + req.body.player + '.html';
+        const previewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '.png';
 
 
         await page.goto('http://localhost:3000' + previewUrl);
@@ -627,7 +628,7 @@ app.post('/get-layout', wrap(async (req, res) => {
 
         const players = _.cloneDeep(round[0].players);
         const player = players.find(p => p.name === req.body.player);
-        player.preview_url = DOMAIN + previewUrl;
+        player.preview_url = DOMAIN + previewUrlPng;
 
         await Round.findByIdAndUpdate(round[0]._id, {
             $set: {
