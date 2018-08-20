@@ -610,7 +610,8 @@ app.post('/get-layout', wrap(async (req, res) => {
         page.setViewport({ width, height });
 
         const previewUrl = '/layouts/' + round[0]._id + '/' + req.body.player + '.html';
-        const previewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '.png';
+        const fullPreviewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '.png';
+        const previewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '_small.png';
 
 
         await page.goto('http://localhost:3000' + previewUrl);
@@ -624,10 +625,21 @@ app.post('/get-layout', wrap(async (req, res) => {
             }
         });
 
+        await page.screenshot({
+            path: dirName + '/' + req.body.player + '_small.png',
+            clip: {
+                x: 0,
+                y: 0,
+                width: width / 2,
+                height: height / 2
+            }
+        });
+
         await browser.close();
 
         const players = _.cloneDeep(round[0].players);
         const player = players.find(p => p.name === req.body.player);
+        player.full_preview_url = DOMAIN + fullPreviewUrlPng;
         player.preview_url = DOMAIN + previewUrlPng;
 
         await Round.findByIdAndUpdate(round[0]._id, {
