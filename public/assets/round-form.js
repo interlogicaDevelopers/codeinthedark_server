@@ -28,6 +28,12 @@ function formSubmit(e) {
 
     const formData = new FormData(document.forms[0]);
 
+    if (formData.get('last') === 'on') {
+        formData.set('last', true)
+    } else {
+        formData.set('last', false)
+    }
+
     const object = {};
 
     let players = [];

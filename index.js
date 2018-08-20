@@ -6,7 +6,7 @@ const aws = require('aws-sdk');
 const bodyParser = require('body-parser');
 const moment = require('moment-timezone');
 const fs = require('fs');
-
+const sharp = require('sharp');
 const puppeteer = require('puppeteer');
 
 let multer = require('multer');
@@ -471,6 +471,8 @@ app.post('/create-round', wrap(async (req, res) => {
         next: false,
         voting: false,
         showing_results: false,
+        receiving_layouts: false,
+        last: req.body.last,
 
         start: moment.tz(req.body.start, 'Europe/Rome'),
         end: moment.tz(req.body.end, 'Europe/Rome'),
@@ -570,8 +572,8 @@ app.post('/get-layout', wrap(async (req, res) => {
 
 
     const round = await Round.find({
-        // receiving_layouts: true
-        voting: true
+        receiving_layouts: true
+        // voting: true
     });
 
     console.log({round});
@@ -625,15 +627,19 @@ app.post('/get-layout', wrap(async (req, res) => {
             }
         });
 
-        await page.screenshot({
-            path: dirName + '/' + req.body.player + '_small.png',
-            clip: {
-                x: 0,
-                y: 0,
-                width: width / 2,
-                height: height / 2
-            }
-        });
+        await sharp(dirName + '/' + req.body.player + '.png')
+            .resize(width /2, height / 2)
+            .toFile(dirName + '/' + req.body.player + '_small.png');
+
+        // await page.screenshot({
+        //     path: dirName + '/' + req.body.player + '_small.png',
+        //     clip: {
+        //         x: 0,
+        //         y: 0,
+        //         width: width / 2,
+        //         height: height / 2
+        //     }
+        // });
 
         await browser.close();
 
