@@ -214,7 +214,7 @@ app.get('/vote/:roundId/:uuid', wrap(async (req, res) => {
 
     if (foundVote.length !== 0) {
         res.status(200);
-        res.send([foundVote]);
+        res.send(foundVote[0]);
         res.end();
         return;
     }
