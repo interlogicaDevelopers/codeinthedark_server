@@ -329,7 +329,7 @@ const checkRounds = async () => {
         let roundLength = moment(runningRound.end).diff(moment(runningRound.start));
         let roundDuration = moment.duration(roundLength);
 
-        let timer = Math.ceil(duration / (roundDuration / max_timer));
+        let timer = Math.ceil(duration / (roundDuration / maxTimer));
 
         const missingString = duration > 0 ? leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds()) : '00:00'
 
