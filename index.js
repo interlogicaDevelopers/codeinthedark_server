@@ -200,9 +200,26 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
     res.status(200);
     res.end()
 
+}));
+
+app.get('/vote/:roundId/:uuid', wrap(async (req, res) => {
 
 
+    const foundVote = await Vote.find({
+        round: req.params.roundId,
+        uuid: req.params.uuid
+    });
 
+    if (foundVote.length !== 0) {
+        res.status(200);
+        res.send([foundVote]);
+        res.end();
+        return;
+    }
+
+    res.status(200);
+    res.send({});
+    res.end();
 
 
 }));
@@ -303,12 +320,14 @@ const checkRounds = async () => {
     if(runningRound) {
         console.log('SENDING RUNNING ROUND');
 
+        const maxTimer = 65;
+
         missing = moment(runningRound.end).diff(moment.tz('Europe/Rome'));
         duration = moment.duration(missing);
         let roundLength = moment(runningRound.end).diff(moment(runningRound.start));
         let roundDuration = moment.duration(roundLength);
 
-        let timer = Math.ceil(duration / (roundDuration / 65));
+        let timer = Math.ceil(duration / (roundDuration / max_timer));
 
         const missingString = duration > 0 ? leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds()) : '00:00'
 
@@ -318,7 +337,7 @@ const checkRounds = async () => {
                 round: runningRound._id,
                 time: Math.floor(duration.as('seconds')),
                 missing: missingString,
-                countdownStep: timer
+                countdownStep: timer <= maxTimer ? timer : maxTimer
             }
         });
 
@@ -376,6 +395,8 @@ const checkRounds = async () => {
         io.sockets.emit('message', {
             type: 'RECEIVING_RESULTS',
             data: {
+                missing: "00:00",
+                time: 0,
                 round: receivingLayoutsRound._id
             }
         });
@@ -600,6 +621,20 @@ app.post('/get-layout', wrap(async (req, res) => {
         });
 
         await browser.close();
+
+
+        const players = _.deepClone(round.players);
+        const player = players.find(p => p.name === 'req.body.player')
+        player.preview_url = previewUrl;
+
+        // Round.update({_id: round[0]._id}, {
+        //     $set: {
+        //         players: plauers
+        //     }
+        // })
+
+
+
 
     } catch(err) {
 

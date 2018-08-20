@@ -29,7 +29,8 @@ const roundSchema = new mongoose.Schema({
     start: Date,
     end: Date,
     vote_start: Date,
-    vote_end: Date
+    vote_end: Date,
+    last: Boolean
 });
 
 const Round = mongoose.model('Round', roundSchema);
