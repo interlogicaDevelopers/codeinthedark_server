@@ -16,7 +16,6 @@ const playerSchema = new mongoose.Schema({
 
 const Player = mongoose.model('Player', playerSchema);
 
-
 const roundSchema = new mongoose.Schema({
     name: String,
     layout_url: 'string',
@@ -47,7 +46,6 @@ const voteSchema = new mongoose.Schema({
 
 const Vote = mongoose.model('Vote', voteSchema);
 
-
 const eventSchema = new mongoose.Schema({
     event_start: Date,
     running_countdown: Boolean,
@@ -55,6 +53,17 @@ const eventSchema = new mongoose.Schema({
 });
 
 const Event = mongoose.model('Event', eventSchema);
+
+
+
+const userSchema = new mongoose.Schema({
+    uuid: String,
+    data: mongoose.Schema.Types.Mixed
+});
+
+const User = mongoose.model('User', userSchema);
+
+
 
 mongoose.connect('mongodb://' + process.env.MONGOUSER + ':' + process.env.MONGOPSW + '@' + process.env.MONGOHOST, {
     dbName: 'citd'
@@ -64,7 +73,8 @@ module.exports = {
     Player,
     Round,
     Vote,
-    Event
+    Event,
+    User
 };
 
 

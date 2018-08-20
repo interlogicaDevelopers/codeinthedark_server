@@ -32,10 +32,31 @@ app.use(bodyParser.json());
 
 
 
-const {Player, Round, Vote, Event} = require('./db');
+const {Player, Round, Vote, Event, User} = require('./db');
 
 app.get('/', wrap(async (req, res) => {
     res.send('WELCOME')
+}));
+
+app.post('/user', wrap(async (req, res) => {
+
+
+    const user = {
+        uuid: req.body.uuid,
+        data: req.body
+    };
+
+    console.log(user)
+
+    const u = new User(user);
+    await u.save();
+
+    res.status(200);
+    res.json({
+        message: 'user created'
+    });
+    res.end()
+
 }));
 
 app.get('/round', wrap(async (req, res) => {
@@ -116,7 +137,8 @@ app.post('/round/startVote/:roundId', wrap(async (req, res) => {
         running: false,
         next: false,
         receiving_layouts: false,
-        showing_results: false
+        showing_results: false,
+        waiting: false
     });
 
     res.status(200);
@@ -574,6 +596,10 @@ app.get('/config', wrap(async (req, res) => {
 
     const config = {
         stage: 'dev',
+        register: {
+            page: '/content/register.html',
+            endpoint: '/user'
+        },
         navigation: [
             {
                 label: 'About Us',
@@ -609,7 +635,6 @@ app.post('/get-layout', wrap(async (req, res) => {
 
     const round = await Round.find({
         receiving_layouts: true
-        // voting: true
     });
 
     console.log({round});
@@ -667,16 +692,6 @@ app.post('/get-layout', wrap(async (req, res) => {
             .resize(width /2, height / 2)
             .toFile(dirName + '/' + req.body.player + '_small.png');
 
-        // await page.screenshot({
-        //     path: dirName + '/' + req.body.player + '_small.png',
-        //     clip: {
-        //         x: 0,
-        //         y: 0,
-        //         width: width / 2,
-        //         height: height / 2
-        //     }
-        // });
-
         await browser.close();
 
         const players = _.cloneDeep(round[0].players);
@@ -692,7 +707,7 @@ app.post('/get-layout', wrap(async (req, res) => {
 
 
     } catch(err) {
-        console.error(err)
+        console.error(err);
         res.status(500);
         res.send(err);
         res.end();

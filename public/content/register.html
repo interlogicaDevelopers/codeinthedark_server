@@ -1,0 +1,58 @@
+<html>
+<head>
+
+
+
+
+</head>
+
+<body>
+
+    <div>
+        <label for="job">Di cosa ti occupi?</label>
+        <input class="input" name="job" id="job" type="text">
+    </div>
+
+    <div>
+        <label for="email">Indirizzo email</label>
+        <input class="input" name="email" id="email" type="email">
+    </div>
+
+
+    <a id="submit-link" href="">Entra</a>
+
+
+    <script>
+
+
+        var link = document.getElementById('submit-link');
+
+        var inputs = document.getElementsByClassName('input');
+
+        var props = {};
+
+        for(var i = 0; i < inputs.length; i++) {
+
+            inputs[i].addEventListener('input', function() {
+                props[this.name] = this.value;
+
+                var queryString = serialize(props);
+                console.log(queryString);
+                link.href = 'app://' + queryString;
+
+            })
+        }
+
+        serialize = function(obj) {
+            var str = [];
+            for (var p in obj)
+                if (obj.hasOwnProperty(p)) {
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                }
+            return str.join("&");
+        }
+
+    </script>
+
+</body>
+</html>

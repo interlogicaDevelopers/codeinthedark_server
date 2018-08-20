@@ -53,15 +53,6 @@ esempio record JSON
 
 --- 
 
-## CONTENT/RENDER
-
-#### /content/???
-Questa sezione esporrà le chiamate che forniranno HTML. 
-Aspetto per la definizione di questa API per metter in comunicazione voi con chi si occuperò di 
-content/grafica per l'app. 
-
---- 
-
 ## VOTE API
 
 ####  POST /vote/{roundId}/{playerId}
@@ -139,6 +130,16 @@ countdown step è un contatore da 60 a 0 necessario per il loading delle immagin
 ```javascript
 {
     type: 'SHOWING_RESULTS',
+    data: {
+        round: _id
+    }
+}
+```
+
+#### WAITING
+```javascript
+{
+    type: 'WAITING',
     data: {
         round: _id
     }
