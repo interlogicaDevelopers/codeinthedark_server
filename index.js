@@ -600,6 +600,10 @@ app.get('/config', wrap(async (req, res) => {
             page: '/content/register.html',
             endpoint: '/user'
         },
+        feedback: {
+            page: '/content/feedback.html',
+            endpoint: '/feedback'
+        },
         navigation: [
             {
                 label: 'About Us',
