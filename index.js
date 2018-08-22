@@ -32,7 +32,7 @@ app.use(bodyParser.json());
 
 
 
-const {Player, Round, Vote, Event, User} = require('./db');
+const {Player, Round, Vote, Event, User, Feedback} = require('./db');
 
 app.get('/', wrap(async (req, res) => {
     res.send('WELCOME')
@@ -54,6 +54,27 @@ app.post('/user', wrap(async (req, res) => {
     res.status(200);
     res.json({
         message: 'user created'
+    });
+    res.end()
+
+}));
+
+app.post('/feedback', wrap(async (req, res) => {
+
+
+    const feedback = {
+        uuid: req.body.uuid,
+        data: req.body
+    };
+
+    console.log(feedback)
+
+    const f = new Feedback(feedback);
+    await f.save();
+
+    res.status(200);
+    res.json({
+        message: 'feedback saved'
     });
     res.end()
 

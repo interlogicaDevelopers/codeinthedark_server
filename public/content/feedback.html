@@ -1,0 +1,80 @@
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link href="https://fonts.googleapis.com/css?family=Space+Mono" rel="stylesheet">
+
+    <link rel="stylesheet" href="/assets/content.css">
+
+
+</head>
+
+
+<div class="text-center">
+    <h3>Feedback</h3>
+
+    <p>Lasciaci un feedback prima di terminare</p>
+
+</div>
+
+<div class="flex-centered">
+
+    <div class="field-container  margin-top-4x">
+
+        <input class="input field-input" placeholder=" " name="like" id="like" type="text">
+        <label class="field-placeholder" for="like">Ti è piaciuto l'evento?</label>
+    </div>
+
+</div>
+
+<div class="flex-centered">
+
+    <div class="field-container  margin-top-4x">
+
+        <input class="input field-input" placeholder=" " name="next" id="next" type="text">
+        <label class="field-placeholder" for="next">Vorresti partecipare al prossimo?</label>
+    </div>
+
+</div>
+
+<div class="text-center margin-top-4x">
+    <a id="submit-link" href="app://">Vai alla pagina di voto</a>
+</div>
+
+
+<script>
+
+
+    var link = document.getElementById('submit-link');
+
+    var inputs = document.getElementsByClassName('input');
+
+    var props = {};
+
+    for (var i = 0; i < inputs.length; i++) {
+
+        inputs[i].addEventListener('input', function () {
+            props[this.name] = this.value;
+
+            var queryString = serialize(props);
+            console.log({queryString})
+            link.href = 'app://' + queryString;
+
+        })
+    }
+
+    var serialize = function (obj) {
+        var str = [];
+        for (var p in obj)
+            if (obj.hasOwnProperty(p)) {
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            }
+        return str.join("&");
+    }
+
+</script>
+
+</body>
+</html>

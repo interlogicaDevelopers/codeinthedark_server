@@ -64,6 +64,13 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 
+const feedbackSchema = new mongoose.Schema({
+    uuid: String,
+    data: mongoose.Schema.Types.Mixed
+});
+
+const Feedback = mongoose.model('Feedback', feedbackSchema);
+
 
 mongoose.connect('mongodb://' + process.env.MONGOUSER + ':' + process.env.MONGOPSW + '@' + process.env.MONGOHOST, {
     dbName: 'citd'
@@ -74,7 +81,8 @@ module.exports = {
     Round,
     Vote,
     Event,
-    User
+    User,
+    Feedback
 };
 
 
