@@ -3,7 +3,24 @@
     color: white
 }
 
+body {
+    padding-top: 100px;
+}
+
+.socket-container {
+    background: #ffd9a5;
+    overflow: auto;
+    font-size: 1.1em;
+    font-weight: bold;
+    position: fixed;
+    top: 0px;
+    height: 80px;
+    z-index: 1000;
+    width: 100%;
+}
+
 #socket-status {
+
     background: aqua;
 }
 

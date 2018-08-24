@@ -31,8 +31,16 @@ html
             div(class="row")
 
                 div(class="col-sm-12")
-                    div#socket-status-message
-                    pre#socket-status
+                    div.socket-container
+                        div(style="width:60%; float:left;")
+                            div#socket-status-message
+                            pre#socket-status
+                        div(style="width:30%; float:left; margin-left:2%")
+                            p sockets connected :
+                                span#sockets-connected
+
+
+
                     button(onclick="return startEventCountdown()") START event Countdown
                     button(onclick="return stopEventCountdown()") STOP event Countdown
 
@@ -79,6 +87,8 @@ html
                                                 span.date-convertible.round-time= round.vote_start
                                                 span  ->
                                                 span.date-convertible.round-time= round.vote_end
+                                                span.round-time
+                                                    a.btn.btn-sm(href="/admin/votes/" + round._id) realtime votes
 
                                             h4 status
 
@@ -126,7 +136,7 @@ html
                                             br
                                             button.btn.btn-sm(onclick="startVote(('" + round._id + "'))") Start vote
                                             br
-                                            button.btn.btn-sm(onclick="showResults(('" + round._id + "'))") Show Results
+                                            button.btn.btn-sm(onclick="showResults(('" + round._id + "'))") Show VoteResults
                                             br
                                             button.btn.btn-sm(onclick="waiting(('" + round._id + "'))") waiting
                                             button.btn.btn-sm(onclick="stopRound('" + round._id + "')") Stop all

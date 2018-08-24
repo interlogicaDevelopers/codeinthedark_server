@@ -20,7 +20,7 @@ let hilighted = '';
 function initSocket() {
     const endpoint = '/';
 
-    const socket = io(endpoint);
+    const socket = io(endpoint, {query: "user=admin"});
 
     socket.on('connect', () => {
         console.log('connect')
@@ -44,8 +44,39 @@ function initSocket() {
             h.classList.add('current')
         }
 
+    });
 
-    })
+    socket.on('adminMessage', message => {
+
+        let val;
+        let socketsConnectedEl = document.querySelector('#sockets-connected');
+
+        switch(message.type) {
+            case 'SOCKET_CONNECTION':
+                val = parseInt(socketsConnectedEl.innerHTML);
+                socketsConnectedEl.innerHTML = (val + 1).toString();
+                break;
+            case 'SOCKET_DISCONNECTION':
+                val = parseInt(socketsConnectedEl.innerHTML);
+                socketsConnectedEl.innerHTML = (val - 1).toString();
+                break;
+            default:
+                break;
+        }
+
+
+    });
+
+    fetch(DOMAIN + '/sockets')
+        .then(response => {
+            return response.json()
+        })
+        .then(response => {
+            document.querySelector('#sockets-connected').innerHTML = response.sockets.length;
+        })
+        .catch(error => {
+            alert(JSON.stringify(error))
+        })
 }
 
 

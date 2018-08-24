@@ -30,6 +30,8 @@ const DOMAIN = 'http://admin.codeinthedark.interlogica.it:3000';
 
 app.use(bodyParser.json());
 
+const adminSockets = [];
+
 
 const {Player, Round, Vote, Event, User, Feedback} = require('./db');
 
@@ -77,6 +79,13 @@ app.post('/feedback', wrap(async (req, res) => {
     });
     res.end()
 
+}));
+
+app.get('/sockets', wrap(async (req, res) => {
+    res.json({
+        sockets: Object.keys(io.sockets.sockets)
+    });
+    res.end();
 }));
 
 app.get('/round', wrap(async (req, res) => {
@@ -318,8 +327,40 @@ app.get('/vote/:roundId', wrap(async (req, res) => {
 
 
 io.on('connection', (socket) => {
-    console.log('CONNECTION', socket.id)
+    console.log('CONNECTION', socket.id);
+    const handshakeData = socket.request;
+
+
+    if (handshakeData._query['user'] === 'admin') {
+        console.log("ADMIN SOCKET CONNECTION");
+        adminSockets.push(socket);
+    }
+
+    for (let i = 0; i < adminSockets.length; i++) {
+        adminSockets[i].emit('adminMessage', {
+            type: 'SOCKET_CONNECTION'
+        })
+    }
+
+    socket.on('disconnect', socket => {
+
+        console.log("SOCKET DISCONNECTION");
+
+        const isAdminSocket = adminSockets.find(s => s.id === socket.id);
+        if (isAdminSocket) {
+            _.remove(adminSockets, s => s.id === socket.id);
+        }
+
+        for (let i = 0; i < adminSockets.length; i++) {
+            adminSockets[i].emit('adminMessage', {
+                type: 'SOCKET_DISCONNECTION'
+            })
+        }
+    });
+
 });
+
+
 
 
 const leftPadZero = val => val.toString().length === 2 ? val.toString() : '0' + val.toString();
@@ -516,6 +557,14 @@ app.get('/admin', wrap(async (req, res) => {
         title: 'Admin DASHBOARD',
         rounds,
         players
+    })
+
+}));
+
+app.get('/admin/votes/:roundId', wrap(async (req, res) => {
+
+    res.render('votes', {
+        title: 'Votes',
     })
 
 }));
