@@ -156,6 +156,26 @@ app.get('/config', wrap(async (req, res) => {
 
 }));
 
+app.post('/user', wrap(async (req, res) => {
+
+    const user = {
+        uuid: req.body.uuid,
+        data: req.body
+    };
+
+    console.log(user)
+
+    const u = new User(user);
+    await u.save();
+
+    res.status(200);
+    res.json({
+        message: 'user created'
+    });
+    res.end()
+
+}));
+
 app.post('/get-layout', wrap(async (req, res) => {
 
     const round = await Round.find({
@@ -623,7 +643,7 @@ app.get('/admin/votes/:roundId', wrap(async (req, res) => {
 
 }));
 
-app.get('/round-form', wrap(async (req, res) => {
+app.get('/round-form', ensureLoggedIn, wrap(async (req, res) => {
 
     const players = await Player.find();
 
@@ -644,7 +664,7 @@ app.get('/user', ensureLoggedIn, wrap(async (req, res) => {
 
 }));
 
-app.get('/player-form', wrap(async (req, res) => {
+app.get('/player-form', ensureLoggedIn, wrap(async (req, res) => {
 
     res.render('player-form', {
         title: 'Create Player'
@@ -665,25 +685,7 @@ app.get('/player-form', wrap(async (req, res) => {
  *
  ************************************************************************************/
 
-app.post('/user', wrap(async (req, res) => {
 
-    const user = {
-        uuid: req.body.uuid,
-        data: req.body
-    };
-
-    console.log(user)
-
-    const u = new User(user);
-    await u.save();
-
-    res.status(200);
-    res.json({
-        message: 'user created'
-    });
-    res.end()
-
-}));
 
 app.post('/round/start/:roundId', wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
