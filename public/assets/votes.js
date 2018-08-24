@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setInterval(() => {
         fetchVotes();
-    }, 3000)
+    }, 5000)
 
 });
 
@@ -20,7 +20,7 @@ function fetchVotes() {
         .then(response => {
 
             let d = response.map(player => {
-               return player.id + ' ---- ' + player.name + ':' + player.votes
+               return player.id + ' ---- ' + player.name + ':' + player.votes + '   <img width="100" src="'+ player.preview_url + '">'
             });
 
             document.querySelector('#data').innerHTML = d.join('<br>');
