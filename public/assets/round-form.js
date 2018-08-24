@@ -34,15 +34,17 @@ function formSubmit(e) {
     }
 
 
-    // function convertTimezone(hour) {
-    //     let h = parseInt(hour);
-    //     let offsetHours = new Date().getTimezoneOffset() / 60;
-    //     let converted = (h + offsetHours) % 24;
-    //     return converted < 0 ? 24 - converted : converted;
-    // }
-    //
-    // formData.set('start_hour', convertTimezone(formData.get('start_hour')));
-    // formData.set('end_hour', convertTimezone(formData.get('end_hour')));
+    function convertTimezone(hour) {
+        let h = parseInt(hour);
+        let offsetHours = new Date().getTimezoneOffset() / 60;
+        let converted = (h + offsetHours) % 24;
+        return converted < 0 ? 24 - converted : converted;
+    }
+
+    formData.set('start_hour', convertTimezone(formData.get('start_hour')));
+    formData.set('end_hour', convertTimezone(formData.get('end_hour')));
+
+
 
     const object = {};
 
