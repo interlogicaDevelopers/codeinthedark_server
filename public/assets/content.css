@@ -5,7 +5,7 @@ body {
     color: white;
 }
 
-a {
+a[role=button] {
     padding: 0 55px 0 55px;
     line-height: 40px;
     text-decoration: none;
@@ -20,6 +20,9 @@ a {
     justify-content: center;
 }
 
+h1 {
+    color: #38f7dd;
+}
 
 .text-center {
     text-align: center;
