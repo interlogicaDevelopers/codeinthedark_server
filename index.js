@@ -17,6 +17,8 @@ const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 let multer = require('multer');
 let formData = multer();
 
+const Joi = require('joi');
+
 const sess = {
     secret: process.env.AUTH_SECRET,
     cookie: {},
@@ -305,6 +307,16 @@ app.get('/round/:id', wrap(async (req, res) => {
 
 app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
 
+    const paramsSchema = Joi.object().keys({
+        roundId: Joi.string().alphanum().required(),
+        playerId: Joi.string().alphanum().required(),
+    });
+
+    const {error, value} = Joi.validate(req.params, paramsSchema);
+
+    if (error) {
+        throw error;
+    }
 
     const foundVote = await Vote.find({
         round: req.params.roundId,
@@ -319,7 +331,6 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
         res.end();
         return;
     }
-
 
     const vote = new Vote({
         vote_for: req.params.playerId,
@@ -357,9 +368,20 @@ app.get('/vote/:roundId/:uuid', wrap(async (req, res) => {
     res.end();
 
 
+
 }));
 
 app.get('/vote/:roundId', wrap(async (req, res) => {
+
+    const schema = Joi.object().keys({
+        roundId: Joi.string().alphanum().required()
+    });
+
+    const {error, value} = Joi.validate(req.params, schema);
+
+    if (error) {
+        throw error;
+    }
 
     const votes = await Vote.find({
         round: req.params.roundId
