@@ -119,7 +119,7 @@ Message format
     data: {round: _id, missing: '', time: 0, countdownStep: 1}
 }
 ```
-countdown step è un contatore da 60 a 0 necessario per il loading delle immagini su app
+countdown step è un contatore da 65 a 0 necessario per il loading delle immagini su app
 
 
 #### VOTE_COUNTDOWN
@@ -130,10 +130,10 @@ countdown step è un contatore da 60 a 0 necessario per il loading delle immagin
 }
 ```
 
-#### RECEIVING_LAYOUTS
+#### RECEIVING_RESULTS
 ```javascript
 {
-    type: 'RECEIVING_LAYOUTS',
+    type: 'RECEIVING_RESULTS',
     data: {round: _id}
 }
 ```
