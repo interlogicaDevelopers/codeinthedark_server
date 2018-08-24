@@ -28,8 +28,7 @@ const wrap = require('async-middleware').wrap;
 const DOMAIN = 'http://admin.codeinthedark.interlogica.it:3000';
 
 
-app.use(bodyParser.json()); 
-
+app.use(bodyParser.json());
 
 
 const {Player, Round, Vote, Event, User, Feedback} = require('./db');
@@ -337,7 +336,7 @@ const checkRounds = async () => {
     if (countdownRunningEvent) {
         console.log("EVENT COUNTDOWN");
 
-        missing = moment(countdownRunningEvent.event_start).diff(moment.tz('Europe/Rome'));
+        missing = moment(countdownRunningEvent.event_start).diff(moment());
         duration = moment.duration(missing);
 
         io.sockets.emit('message', {
@@ -360,7 +359,7 @@ const checkRounds = async () => {
     if (nextRound) {
         console.log('SENDING NEXT ROUND');
 
-        missing = moment(nextRound.start).diff(moment.tz('Europe/Rome'));
+        missing = moment(nextRound.start).diff(moment());
         duration = moment.duration(missing);
 
 
@@ -387,7 +386,7 @@ const checkRounds = async () => {
 
         const maxTimer = 65;
 
-        missing = moment(runningRound.end).diff(moment.tz('Europe/Rome'));
+        missing = moment(runningRound.end).diff(moment());
         duration = moment.duration(missing);
         let roundLength = moment(runningRound.end).diff(moment(runningRound.start));
         let roundDuration = moment.duration(roundLength);
@@ -416,7 +415,7 @@ const checkRounds = async () => {
     if(runningVote) {
         console.log('SENDING VOTE RUNNING');
 
-        missing = moment(runningVote.vote_end).diff(moment.tz('Europe/Rome'));
+        missing = moment(runningVote.vote_end).diff(moment());
         duration = moment.duration(missing);
 
         const missingString = duration > 0 ? leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds()) : '00:00'

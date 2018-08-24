@@ -1,10 +1,19 @@
-var DOMAIN = '';
-
-
+const DOMAIN = '';
 
 document.addEventListener('DOMContentLoaded', function() {
     initSocket();
+    convertDates();
 });
+
+function convertDates() {
+
+    let dates = document.getElementsByClassName('date-convertible');
+    for (let i = 0; i < dates.length; i++) {
+        let d = new Date(dates[i].innerHTML);
+        dates[i].innerHTML = d.getHours() + ':' + (d.getMinutes()<10?'0'+d.getMinutes():d.getMinutes());
+    }
+
+}
 
 let hilighted = '';
 
@@ -26,13 +35,11 @@ function initSocket() {
 
         hilighted = '';
 
-
-        console.log(message.data.round)
         if (message.data.round) {
             hilighted = message.data.round;
         }
 
-        const h = document.getElementById(hilighted)
+        const h = document.getElementById(hilighted);
         if (h) {
             h.classList.add('current')
         }

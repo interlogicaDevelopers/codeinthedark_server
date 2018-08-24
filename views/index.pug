@@ -66,14 +66,19 @@ html
                                                 br
 
                                         div(class="col-sm-8")
-                                            p round time
+                                            p
+                                                b ROUND
 
-                                                span= round.start
-                                                span= round.end
+                                                span.date-convertible.round-time= round.start
+                                                span  ->
+                                                span.date-convertible.round-time= round.end
 
-                                            p voting time
-                                                span= round.vote_start
-                                                span= round.vote_end
+                                            p
+                                                b VOTE
+
+                                                span.date-convertible.round-time= round.vote_start
+                                                span  ->
+                                                span.date-convertible.round-time= round.vote_end
 
                                             h4 status
 
@@ -88,13 +93,13 @@ html
                                                         i(class='fa fa-check')
                                                     else
                                                         //i(class='fa fa-times')
-                                                span.status voting
-                                                    if round.voting
+                                                span.status receiving layouts
+                                                    if round.receiving_layouts
                                                         i(class='fa fa-check')
                                                     else
                                                         //i(class='fa fa-times')
-                                                span.status receiving layouts
-                                                    if round.receiving_layouts
+                                                span.status voting
+                                                    if round.voting
                                                         i(class='fa fa-check')
                                                     else
                                                         //i(class='fa fa-times')
@@ -117,9 +122,9 @@ html
                                             br
                                             button.btn.btn-sm(onclick="startRound('" + round._id + "')") Start round
                                             br
-                                            button.btn.btn-sm(onclick="startVote(('" + round._id + "'))") Start vote
-                                            br
                                             button.btn.btn-sm(onclick="receiveLayouts(('" + round._id + "'))") Receive Layouts
+                                            br
+                                            button.btn.btn-sm(onclick="startVote(('" + round._id + "'))") Start vote
                                             br
                                             button.btn.btn-sm(onclick="showResults(('" + round._id + "'))") Show Results
                                             br
