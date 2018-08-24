@@ -12,11 +12,10 @@ function init() {
         dateFormat: 'Z'
     };
 
-    flatpickr("#start", options);
-    flatpickr("#end", options);
-    flatpickr("#vote_start", options);
-    flatpickr("#vote_end", options);
-
+    var roundStartPicker =  new Pikaday({ field: document.getElementById('start') });
+    var roundEndPicker =  new Pikaday({ field: document.getElementById('end') });
+    var voteStartPicker =  new Pikaday({ field: document.getElementById('vote_start') });
+    var voteEndPicker =  new Pikaday({ field: document.getElementById('vote_end') });
 
 
 }
@@ -51,7 +50,7 @@ function formSubmit(e) {
 
     const json = JSON.stringify(object);
 
-    fetch('/create-round', {
+    fetch('/round', {
         method: "post",
         body: json,
         headers: {

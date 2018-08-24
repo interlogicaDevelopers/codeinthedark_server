@@ -535,11 +535,27 @@ app.get('/round-form', wrap(async (req, res) => {
 }));
 
 
-app.post('/create-round', wrap(async (req, res) => {
+app.post('/round', wrap(async (req, res) => {
 
     const players = await Player.find({
         '_id': { $in : _.compact(req.body.players) }
     });
+
+    const roundStart = moment(req.body.start)
+        .set('H', req.body.start_hour)
+        .set('m', req.body.start_minute);
+
+    const roundEnd = moment(req.body.end)
+        .set('H', req.body.end_hour)
+        .set('m', req.body.end_minute);
+
+    const voteStart = moment(req.body.vote_start)
+        .set('H', req.body.vote_start_hour)
+        .set('m', req.body.vote_start_minute);
+
+    const voteEnd = moment(req.body.vote_end)
+        .set('H', req.body.vote_end_hour)
+        .set('m', req.body.vote_end_minute);
 
     const round = {
         name: req.body.name,
@@ -553,10 +569,10 @@ app.post('/create-round', wrap(async (req, res) => {
         receiving_layouts: false,
         last: req.body.last,
 
-        start: moment.tz(req.body.start, 'Europe/Rome'),
-        end: moment.tz(req.body.end, 'Europe/Rome'),
-        vote_start: moment.tz(req.body.vote_start, 'Europe/Rome'),
-        vote_end: moment.tz(req.body.vote_end, 'Europe/Rome'),
+        start: roundStart,
+        end: roundEnd,
+        vote_start: voteStart,
+        vote_end: voteEnd
     };
 
     console.log({round});

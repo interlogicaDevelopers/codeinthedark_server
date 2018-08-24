@@ -3,7 +3,7 @@ html
         title!= title
 
         script(
-        src='https://cdn.jsdelivr.net/npm/flatpickr'
+        src='https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js'
         )
 
         script(
@@ -12,7 +12,16 @@ html
 
         link(
         rel='stylesheet'
-        href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css"
+        )
+
+        link(
+        rel='stylesheet'
+        href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'
+        )
+        link(
+        rel='stylesheet'
+        href='/assets/style.css'
         )
 
     body
@@ -25,54 +34,107 @@ html
         action="#"
         name="create-form"
         onsubmit="return formSubmit(event)"
+        autocomplete="off"
         )
-            div(class="form-control")
-                label Name
-                input(
-                type='text'
-                name='name'
-                )
-            div
-                label Layout url
-                input(
-                type="text"
-                name="layout_url"
-                )
 
-            div
-                label players
+            div.row
+                div.col-sm-6
+                    div.form-group
+                        label Name
+                        input.form-control(
+                        type='text'
+                        name='name'
+                        )
+                div.col-sm-6
+                    div.form-group
+                        label Layout url
+                        input.form-control(
+                        type="text"
+                        name="layout_url"
+                        )
+            div.row
+                div.col-sm-12
 
-                - var n = 0
-                while n < 10
-                    select(
-                    name="players[" + n++ + "]"
-                    )
-                        option(value='')
-                        each player in players
-                            option(
-                            value=player._id
-                            )!= player.name
+                    div.form-group
+                        label players
 
-            div
-                label start
-                input#start(name="start")
+                        - var n = 0
+                        while n < 10
+                            select(
+                            name="players[" + n++ + "]"
+                            )
+                                option(value='')
+                                each player in players
+                                    option(
+                                    value=player._id
+                                    )!= player.name
 
-            div
-                label end
-                input#end(name="end")
+                div.col-sm-6
+                    div.row
+                        div.col-sm-4
+                            div.form-group
+                                label
+                                    b ROUND START
+                                input.form-control#start(name="start")
+                        div.col-sm-4
+                            div.form-group
+                                label hour
+                                input.form-control#start_hour(name="start_hour")
+                        div.col-sm-4
+                            div.form-group
+                                label minute
+                                input.form-control#start_minute(name="start_minute")
+                div.col-sm-6
+                    div.row
+                        div.col-sm-4
+                            div.form-group
+                                label
+                                    b ROUND END
+                                input.form-control#end(name="end")
+                        div.col-sm-4
+                            div.form-group
+                                label hour
+                                input.form-control#end_hour(name="end_hour")
+                        div.col-sm-4
+                            div.form-group
+                                label minute
+                                input.form-control#end_minute(name="end_minute")
+                div.col-sm-6
+                    div.row
+                        div.col-sm-4
+                            div.form-group
+                                label
+                                    b VOTE START
+                                input.form-control#vote_start(name="vote_start")
+                        div.col-sm-4
+                            div.form-group
+                                label hour
+                                input.form-control#vote_start_hour(name="vote_start_hour")
+                        div.col-sm-4
+                            div.form-group
+                                label minute
+                                input.form-control#vote_start_minute(name="vote_start_minute")
+                div.col-sm-6
+                    div.row
+                        div.col-sm-4
+                            div.form-group
+                                label
+                                    b VOTE END
+                                input.form-control#vote_end(name="vote_end")
+                        div.col-sm-4
+                            div.form-group
+                                label hour
+                                input.form-control#vote_end_hour(name="vote_end_hour")
+                        div.col-sm-4
+                            div.form-group
+                                label minute
+                                input.form-control#vote_end_minute(name="vote_end_minute")
+                div.col-sm-6
+                    div.form-group
+                        input.checkbox#last(type='checkbox'
+                        name="last")
+                        label last
 
-            div
-                label vote_start
-                input#vote_start(name="vote_start")
 
-            div
-                label vote_end
-                input#vote_end(name="vote_end")
-
-                div
-                    label last
-                    input(type='checkbox')#last(name="last")
-
-
-            div
-                button  Create Round
+                    div
+                        button  Create Round

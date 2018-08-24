@@ -10,3 +10,19 @@
 .current {
     background: antiquewhite;
 }
+
+.round {
+    border: 2px solid black;
+}
+
+.round .round-header {
+    background: #a5bcff;
+}
+
+.status {
+    padding: 0 10px;
+}
+
+.fa-check {
+    color: #55ff55;
+}

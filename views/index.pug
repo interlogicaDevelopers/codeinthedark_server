@@ -3,114 +3,154 @@ html
         title!= title
 
         script(
-            src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.slim.js"
+        src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.slim.js"
+        )
+
+        link(
+        rel='stylesheet'
+        href='https://use.fontawesome.com/releases/v5.2.0/css/all.css'
+        integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous"
         )
 
         script(
-            src='/assets/dashboard.js'
+        src='/assets/dashboard.js'
         )
         link(
-            rel='stylesheet'
-            href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'
-            )
+        rel='stylesheet'
+        href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'
+        )
         link(
-            rel='stylesheet'
-            href='/assets/style.css'
+        rel='stylesheet'
+        href='/assets/style.css'
         )
     body
 
-        div#socket-status-message
-        pre#socket-status
+        div(class="container-fluid")
 
-        div
-            button(onclick="return startEventCountdown()") START event Countdown
-            button(onclick="return stopEventCountdown()") STOP event Countdown
+            div(class="row")
 
+                div(class="col-sm-12")
+                    div#socket-status-message
+                    pre#socket-status
+                    button(onclick="return startEventCountdown()") START event Countdown
+                    button(onclick="return stopEventCountdown()") STOP event Countdown
 
-        div
+                div(class="col-sm-12")
 
-            h1 DASHBOARD
+                    h2 Rounds
 
-            h2 Rounds
+                    div
+                        a(href="/round-form"
+                        class="btn btn-primary") Add Round
 
-            div
-                a(href="/round-form") Add Round
+                    div
+                        each round in rounds
+                            div(id=round._id
+                            class="row round")
 
-            table
-                thead
-                    tr
-                        th roundId
-                        th name
-                        th layout_url
-                        th players
-                        th next
-                        th running
-                        th voting
-                        th showing results
-                        th receiving layouts
-                        th waiting
-                        th start
-                        th end
-                        th vote_start
-                        th vote_end
-                        th actions
-                tbody
-                    each round in rounds
-                        tr(id=round._id)
-                            td= round._id
-                            td= round.name
-                            td
-                                a(href=round.layout_url)
-                                    img(src=round.layout_url width="100")
+                                div(class="col-sm-12 round-header")
+                                    h4= round.name + ' - ' + round._id
 
-                            td
-                                each player in round.players
-                                    span= player.name
-                                    br
-                            td= round.next
-                            td= round.running
-                            td= round.voting
-                            td= round.showing_results
-                            td= round.receiving_layouts
-                            td= round.waiting
-                            td= round.start
-                            td= round.end
-                            td= round.vote_start
-                            td= round.vote_end
-                            td
-                                button(onclick="startRound('" + round._id + "')") Start
-                                button(onclick="stopRound('" + round._id + "')") Stop
-                                button(onclick="archiveRound(('" + round._id + "'))") Archive
-                                button(onclick="nextRound('" + round._id + "')") Set as next
-                                button(onclick="startVote(('" + round._id + "'))") start_vote_countdown
-                                button(onclick="showResults(('" + round._id + "'))") show_results
-                                button(onclick="receiveLayouts(('" + round._id + "'))") receive layouts
-                                button(onclick="waiting(('" + round._id + "'))") waiting
-                                button(
-                                    class='danger'
-                                    onclick="deleteRound(('" + round._id + "'))"
-                                    ) Delete Round
+                                div(class="col-sm-12")
+
+                                    div(class="row")
+                                        div(class="col-sm-1")
+                                            a(href=round.layout_url)
+                                                img(src=round.layout_url width="100")
 
 
+                                        div(class="col-sm-1")
+                                            each player in round.players
+                                                span= player.name
+                                                br
 
-            h2 Players
+                                        div(class="col-sm-8")
+                                            p round time
 
-            div
-                a(href="/player-form") Add Player
+                                                span= round.start
+                                                span= round.end
 
-            table
-                thead
-                    tr
-                        th player ID
-                        th Name
-                        th Actions
-                tbody
-                    each player in players
-                        tr
-                            td= player._id
-                            td= player.name
-                            td
-                                button(
-                                class='danger'
-                                onclick="deletePlayer(('" + player._id + "'))"
-                                ) Delete Player
+                                            p voting time
+                                                span= round.vote_start
+                                                span= round.vote_end
+
+                                            h4 status
+
+                                            p
+                                                span.status next
+                                                    if round.next
+                                                        i(class='fa fa-check')
+                                                    else
+                                                        //i(class='fa fa-times')
+                                                span.status running
+                                                    if round.running
+                                                        i(class='fa fa-check')
+                                                    else
+                                                        //i(class='fa fa-times')
+                                                span.status voting
+                                                    if round.voting
+                                                        i(class='fa fa-check')
+                                                    else
+                                                        //i(class='fa fa-times')
+                                                span.status receiving layouts
+                                                    if round.receiving_layouts
+                                                        i(class='fa fa-check')
+                                                    else
+                                                        //i(class='fa fa-times')
+                                                span.status showing results
+                                                    if round.showing_results
+                                                        i(class='fa fa-check')
+                                                    else
+                                                        //i(class='fa fa-times')
+
+                                                span.status waiting
+                                                    if round.waiting
+                                                        i(class='fa fa-check')
+                                                    else
+                                                        //i(class='fa fa-times')
+
+
+
+                                        div(class="col-sm-2")
+                                            button.btn.btn-sm(onclick="nextRound('" + round._id + "')") Start round countdown
+                                            br
+                                            button.btn.btn-sm(onclick="startRound('" + round._id + "')") Start round
+                                            br
+                                            button.btn.btn-sm(onclick="startVote(('" + round._id + "'))") Start vote
+                                            br
+                                            button.btn.btn-sm(onclick="receiveLayouts(('" + round._id + "'))") Receive Layouts
+                                            br
+                                            button.btn.btn-sm(onclick="showResults(('" + round._id + "'))") Show Results
+                                            br
+                                            button.btn.btn-sm(onclick="waiting(('" + round._id + "'))") waiting
+                                            button.btn.btn-sm(onclick="stopRound('" + round._id + "')") Stop all
+                                            br
+                                            button.btn.btn-sm.btn-danger(
+                                            onclick="deleteRound(('" + round._id + "'))"
+                                            ) Delete Round
+
+
+
+                div(class="col-sm-12")
+                    h2 Players
+
+                    div
+                        a(href="/player-form") Add Player
+
+                    table(class="table")
+                        thead
+                            tr
+                                th player ID
+                                th Name
+                                th Actions
+                        tbody
+                            each player in players
+                                tr
+                                    td= player._id
+                                    td= player.name
+                                    td
+                                        button(
+                                        class='danger'
+                                        onclick="deletePlayer(('" + player._id + "'))"
+                                        ) Delete Player
