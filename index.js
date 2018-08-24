@@ -258,7 +258,14 @@ app.post('/get-layout', wrap(async (req, res) => {
             $set: {
                 players: players
             }
-        })
+        });
+
+        res.status(200);
+        res.json({
+            status: 'OK',
+            redirect: DOMAIN + fullPreviewUrlPng
+        });
+        res.end()
 
 
     } catch (err) {
@@ -268,8 +275,7 @@ app.post('/get-layout', wrap(async (req, res) => {
         res.end();
     }
 
-    res.status(200);
-    res.end()
+
 }));
 
 app.post('/feedback', wrap(async (req, res) => {
