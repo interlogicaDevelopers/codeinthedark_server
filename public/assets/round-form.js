@@ -43,7 +43,8 @@ function formSubmit(e) {
 
     formData.set('start_hour', convertTimezone(formData.get('start_hour')));
     formData.set('end_hour', convertTimezone(formData.get('end_hour')));
-
+    formData.set('vote_start_hour', convertTimezone(formData.get('vote_start_hour')));
+    formData.set('vote_end_hour', convertTimezone(formData.get('vote_end_hour')));
 
 
     const object = {};
