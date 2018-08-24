@@ -12,7 +12,7 @@ const puppeteer = require('puppeteer');
 
 const Auth0Strategy = require('passport-auth0');
 const passport = require('passport');
-var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
+const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 
 let multer = require('multer');
 let formData = multer();
@@ -24,11 +24,11 @@ const sess = {
     saveUninitialized: true
 };
 
-const DOMAIN = process.env.DOMAIN || 'http://admin.codeinthedark.interlogica.it:3000';
+const DOMAIN = process.env.DOMAIN;
 
-var strategy = new Auth0Strategy({
-        domain: 'codeinthedarkve.eu.auth0.com',
-        clientID: 'R_OUu1yQVONErQ75nvcQxjsMphcNEUyB',
+const strategy = new Auth0Strategy({
+        domain: process.env.AUTH_DOMAIN,
+        clientID: process.env.AUTH_CLIENT_ID,
         clientSecret: process.env.AUTH_SECRET, // Replace this with the client secret for your app
         callbackURL: DOMAIN + '/callback'
     },
@@ -42,6 +42,7 @@ var strategy = new Auth0Strategy({
 
 passport.use(strategy);
 
+const leftPadZero = val => val.toString().length === 2 ? val.toString() : '0' + val.toString();
 
 const app = express();
 app.use(cors());
@@ -70,6 +71,17 @@ const adminSockets = [];
 
 const {Player, Round, Vote, Event, User, Feedback} = require('./db');
 
+/*******************************************************************************
+ *      ___  _   _ _____ _   _
+ *     / _ \| | | |_   _| | | |
+ *    / /_\ \ | | | | | | |_| |
+ *    |  _  | | | | | | |  _  |
+ *    | | | | |_| | | | | | | |
+ *    \_| |_/\___/  \_/ \_| |_/
+ *
+ *
+ ****************************************************************************/
+
 // Perform the login, after login Auth0 will redirect to callback
 app.get('/login',
     passport.authenticate('auth0', {scope: 'openid email profile'}),
@@ -97,9 +109,7 @@ app.get('/logout', wrap(async (req, res) => {
 }));
 
 
-app.get('/', wrap(async (req, res) => {
-    res.send('WELCOME')
-}));
+
 
 /*******************************************************************************
  *      ___  ______ _____ _____
@@ -162,8 +172,6 @@ app.post('/user', wrap(async (req, res) => {
         uuid: req.body.uuid,
         data: req.body
     };
-
-    console.log(user)
 
     const u = new User(user);
     await u.save();
@@ -270,8 +278,6 @@ app.post('/feedback', wrap(async (req, res) => {
         data: req.body
     };
 
-    console.log(feedback)
-
     const f = new Feedback(feedback);
     await f.save();
 
@@ -281,13 +287,6 @@ app.post('/feedback', wrap(async (req, res) => {
     });
     res.end()
 
-}));
-
-app.get('/sockets', wrap(async (req, res) => {
-    res.json({
-        sockets: Object.keys(io.sockets.sockets)
-    });
-    res.end();
 }));
 
 app.get('/round', wrap(async (req, res) => {
@@ -303,7 +302,6 @@ app.get('/round/:id', wrap(async (req, res) => {
     res.json(round)
 
 }));
-
 
 app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
 
@@ -424,8 +422,6 @@ io.on('connection', (socket) => {
 
 });
 
-
-const leftPadZero = val => val.toString().length === 2 ? val.toString() : '0' + val.toString();
 
 const checkRounds = async () => {
 
@@ -594,19 +590,6 @@ setInterval(async () => {
 }, 1000);
 
 
-app.use((err, req, res, next) => {
-    console.log('ERROR');
-    if (res.headersSent) {
-        return next(err)
-    }
-    res.status(500).send(err.message)
-});
-
-
-app.use(express.static('public'));
-
-
-
 /*******************************************************
  *    ______ _____ _   _______ ___________
  *    | ___ \  ___| \ | |  _  \  ___| ___ \
@@ -620,7 +603,12 @@ app.use(express.static('public'));
  *
  /*******************************************************/
 
+app.use(express.static('public'));
 app.set('view engine', 'pug');
+
+app.get('/', wrap(async (req, res) => {
+    res.send('WELCOME')
+}));
 
 app.get('/admin', ensureLoggedIn, wrap(async (req, res) => {
 
@@ -685,9 +673,14 @@ app.get('/player-form', ensureLoggedIn, wrap(async (req, res) => {
  *
  ************************************************************************************/
 
+app.get('/sockets', ensureLoggedIn, wrap(async (req, res) => {
+    res.json({
+        sockets: Object.keys(io.sockets.sockets)
+    });
+    res.end();
+}));
 
-
-app.post('/round/start/:roundId', wrap(async (req, res) => {
+app.post('/round/start/:roundId', ensureLoggedIn, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: false,
         running: true,
@@ -702,7 +695,7 @@ app.post('/round/start/:roundId', wrap(async (req, res) => {
 
 }));
 
-app.post('/round/next/:roundId', wrap(async (req, res) => {
+app.post('/round/next/:roundId', ensureLoggedIn, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: false,
         running: false,
@@ -717,7 +710,7 @@ app.post('/round/next/:roundId', wrap(async (req, res) => {
 
 }));
 
-app.post('/round/stop/:roundId', wrap(async (req, res) => {
+app.post('/round/stop/:roundId', ensureLoggedIn, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: false,
         running: false,
@@ -731,7 +724,7 @@ app.post('/round/stop/:roundId', wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/round/archive/:roundId', wrap(async (req, res) => {
+app.post('/round/archive/:roundId', ensureLoggedIn, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: false,
         running: false,
@@ -745,7 +738,7 @@ app.post('/round/archive/:roundId', wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/round/startVote/:roundId', wrap(async (req, res) => {
+app.post('/round/startVote/:roundId', ensureLoggedIn, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: true,
         running: false,
@@ -759,7 +752,7 @@ app.post('/round/startVote/:roundId', wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/round/showResults/:roundId', wrap(async (req, res) => {
+app.post('/round/showResults/:roundId', ensureLoggedIn, wrap(async (req, res) => {
 
     await Round.update({_id: req.params.roundId}, {
         voting: false,
@@ -774,7 +767,7 @@ app.post('/round/showResults/:roundId', wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/round/receiveLayouts/:roundId', wrap(async (req, res) => {
+app.post('/round/receiveLayouts/:roundId', ensureLoggedIn, wrap(async (req, res) => {
 
     await Round.update({_id: req.params.roundId}, {
         voting: false,
@@ -789,7 +782,7 @@ app.post('/round/receiveLayouts/:roundId', wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/round/waiting/:roundId', wrap(async (req, res) => {
+app.post('/round/waiting/:roundId', ensureLoggedIn, wrap(async (req, res) => {
 
     await Round.update({_id: req.params.roundId}, {
         voting: false,
@@ -804,7 +797,7 @@ app.post('/round/waiting/:roundId', wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/event/startCountDown', wrap(async (req, res) => {
+app.post('/event/startCountDown', ensureLoggedIn, wrap(async (req, res) => {
 
     await Event.update({running_countdown: false}, {
         running_countdown: true
@@ -815,7 +808,7 @@ app.post('/event/startCountDown', wrap(async (req, res) => {
 
 }));
 
-app.post('/event/stopCountDown', wrap(async (req, res) => {
+app.post('/event/stopCountDown', ensureLoggedIn, wrap(async (req, res) => {
 
     await Event.update({running_countdown: true}, {
         running_countdown: false
@@ -826,7 +819,7 @@ app.post('/event/stopCountDown', wrap(async (req, res) => {
 
 }));
 
-app.post('/round', wrap(async (req, res) => {
+app.post('/round', ensureLoggedIn, wrap(async (req, res) => {
 
     const players = await Player.find({
         '_id': {$in: _.compact(req.body.players)}
@@ -881,7 +874,7 @@ app.post('/round', wrap(async (req, res) => {
 }));
 
 
-app.post('/create-player', wrap(async (req, res) => {
+app.post('/create-player', ensureLoggedIn, wrap(async (req, res) => {
 
     const player = {
         name: req.body.name
@@ -898,7 +891,7 @@ app.post('/create-player', wrap(async (req, res) => {
 }));
 
 
-app.delete('/round/:roundId', wrap(async (req, res) => {
+app.delete('/round/:roundId', ensureLoggedIn, wrap(async (req, res) => {
 
     await Round.deleteOne({_id: req.params.roundId});
 
@@ -907,7 +900,7 @@ app.delete('/round/:roundId', wrap(async (req, res) => {
 
 }));
 
-app.delete('/player/:playerId', wrap(async (req, res) => {
+app.delete('/player/:playerId', ensureLoggedIn, wrap(async (req, res) => {
 
     await Player.deleteOne({_id: req.params.playerId});
 
@@ -917,6 +910,13 @@ app.delete('/player/:playerId', wrap(async (req, res) => {
 }));
 
 
+app.use((err, req, res, next) => {
+    console.log('ERROR');
+    if (res.headersSent) {
+        return next(err)
+    }
+    res.status(500).send(err.message)
+});
 
 
-server.listen(3000);
+server.listen(process.env.port || 3000);
