@@ -542,19 +542,23 @@ app.post('/round', wrap(async (req, res) => {
 
     const roundStart = moment(req.body.start)
         .set('H', req.body.start_hour)
-        .set('m', req.body.start_minute);
+        .set('m', req.body.start_minute)
+        .utc();
 
     const roundEnd = moment(req.body.end)
         .set('H', req.body.end_hour)
-        .set('m', req.body.end_minute);
+        .set('m', req.body.end_minute)
+        .utc();
 
     const voteStart = moment(req.body.vote_start)
         .set('H', req.body.vote_start_hour)
-        .set('m', req.body.vote_start_minute);
+        .set('m', req.body.vote_start_minute)
+        .utc();
 
     const voteEnd = moment(req.body.vote_end)
         .set('H', req.body.vote_end_hour)
-        .set('m', req.body.vote_end_minute);
+        .set('m', req.body.vote_end_minute)
+        .utc();
 
     const round = {
         name: req.body.name,
