@@ -8,70 +8,164 @@
 
     <link rel="stylesheet" href="/assets/content.css">
 
+    <style>
+        .privacy-link {
+            color: #fff;
+        }
+
+        a.disabled {
+            display: none;
+        }
+
+        fieldset {
+            width: 100%;
+        }
+
+    </style>
+
 
 </head>
 
 
 <div class="text-center">
-    <h3>Chi sei?</h3>
+    <h3>Ciao!</h3>
 
-    <p>Qualche info su di te prima di cominciare</p>
+    <p>
+        Grazie di aver scaricato l'app. <br>
+        Prima di iniziare qualche info su di te
+    </p>
 
-</div>
-
-<div class="flex-centered">
-
-    <div class="field-container  margin-top-4x">
-
-        <input class="input field-input" placeholder=" " name="job" id="job" type="text">
-        <label class="field-placeholder" for="job">Di cosa ti occupi?</label>
-    </div>
+    <p>Di cosa ti occupi?</p>
 
 </div>
 
 <div class="flex-centered">
 
-    <div class="field-container  margin-top-4x">
 
-        <input class="input field-input" placeholder=" " name="test" id="test" type="text">
-        <label class="field-placeholder" for="test">Un test</label>
-    </div>
+
+    <!--<div class="field-container  margin-top-4x">-->
+
+        <!--<input class="input field-input" placeholder=" " name="job" id="job" type="text">-->
+        <!--<label class="field-placeholder" for="job">Di cosa ti occupi?</label>-->
+    <!--</div>-->
+
+    <fieldset>
+
+        <label for="radio-1">
+            <input type="radio" name="radio1" id="radio-1" value="fe-dev" checked="checked"/> Frontend Developer
+        </label>
+
+        <br>
+
+
+        <label for="radio-2">
+            <input type="radio" name="radio1" id="radio-2" value="ux-ui" /> UX/UI Designer
+        </label>
+
+        <br>
+
+
+        <label for="radio-3">
+            <input type="radio" name="radio1" id="radio-3" value="web-designer"/> Web Designer
+        </label>
+
+        <br>
+
+        <label for="radio-4">
+            <input type="radio" name="radio1" id="radio-4" value="be-developer"/> Backend Developer
+        </label>
+
+        <br>
+
+
+        <label for="radio-5">
+            <input type="radio" name="radio1" id="radio-5" value="marketing"/> Marketing
+        </label>
+
+        <br>
+
+        <label for="radio-6">
+            <input type="radio" name="radio1" id="radio-6" value="altro"/> Altro
+        </label>
+
+    </fieldset>
+
+
 
 </div>
+
+<p>Vuoi vincere un simpatico gadget? Lascia la tua mail per l'estrazione di metà serata!</p>
 
 <div class="flex-centered">
 
     <div class="field-container margin-top-4x">
 
         <input class="input field-input" placeholder=" " name="email" id="email" type="text">
-        <label class="field-placeholder" for="email">Indirizzo email</label>
+        <label class="field-placeholder" for="email">Indirizzo email *</label>
     </div>
 </div>
 
-<div class="text-center margin-top-4x">
-    <a role="button" id="submit-link" href="app://">Entra</a>
+<p>Accedi e divertiti</p>
+
+<div>
+    <label for="privacy">
+        <input type="checkbox" id="privacy">
+        Ho letto la <a class="privacy-link" href="browser://http://admin.codeinthedark.interlogica.it:3000/content/privacy.html">privacy policy</a>
+    </label>
 </div>
+
+
+<div class="text-center margin-top-4x">
+    <a role="button" id="submit-link" class="disabled" href="app://">SI INIZIA!</a>
+</div>
+
 
 
 <script>
 
 
     var link = document.getElementById('submit-link');
-
     var inputs = document.getElementsByClassName('input');
+    var emailInput = document.getElementById('email');
 
-    var props = {};
+    var radioInput = document.querySelectorAll('[name="radio1"]');
+
+    var props = {
+        job: 'fe-dev'
+    };
+
+    console.log("radioInput", radioInput);
+
+    for (var j = 0; j < radioInput.length; j++) {
+        radioInput[j].addEventListener('change', function() {
+            props.job = this.value
+
+            buildQueryString()
+
+        })
+    }
+
+
+    toggleSubmitLink()
+
+
 
     for (var i = 0; i < inputs.length; i++) {
 
         inputs[i].addEventListener('input', function () {
             props[this.name] = this.value;
 
-            var queryString = serialize(props);
-            console.log({queryString})
-            link.href = 'app://' + queryString;
+            buildQueryString()
+
+            toggleSubmitLink()
 
         })
+    }
+
+    function buildQueryString() {
+        var queryString = serialize(props);
+        console.log({queryString})
+        link.href = 'app://' + queryString;
     }
 
     var serialize = function (obj) {
@@ -81,6 +175,19 @@
                 str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
             }
         return str.join("&");
+    }
+
+    function toggleSubmitLink() {
+        if (!validateEmail(emailInput.value)) {
+            link.classList.add('disabled');
+        } else {
+            link.classList.remove('disabled');
+        }
+    }
+
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
     }
 
 </script>
