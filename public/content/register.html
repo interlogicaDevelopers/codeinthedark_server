@@ -109,8 +109,8 @@
 
 <div>
     <label for="privacy">
-        <input type="checkbox" id="privacy">
-        Ho letto la <a class="privacy-link" href="browser://http://admin.codeinthedark.interlogica.it:3000/content/privacy.html">privacy policy</a>
+        <input type="checkbox" checked id="privacy">
+        Ho letto la <a class="privacy-link" href="https://s3-eu-west-1.amazonaws.com/citd.interlogica/privacy.html">privacy policy</a>
     </label>
 </div>
 
@@ -129,6 +129,8 @@
     var emailInput = document.getElementById('email');
 
     var radioInput = document.querySelectorAll('[name="radio1"]');
+
+    var privacyInput = document.getElementById('privacy');
 
     var props = {
         job: 'fe-dev'
@@ -178,12 +180,17 @@
     }
 
     function toggleSubmitLink() {
-        if (!validateEmail(emailInput.value)) {
+
+        console.log(privacyInput.checked )
+
+        if (!privacyInput.checked || !validateEmail(emailInput.value)) {
             link.classList.add('disabled');
         } else {
             link.classList.remove('disabled');
         }
     }
+
+    privacyInput.addEventListener('change', toggleSubmitLink, false)
 
     function validateEmail(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
