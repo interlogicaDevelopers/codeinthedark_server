@@ -4,28 +4,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 
+
+
     <link href="https://fonts.googleapis.com/css?family=Space+Mono" rel="stylesheet">
 
     <link rel="stylesheet" href="/assets/content.css">
 
 
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+    <!--<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>-->
+    <!--<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>-->
+
+
+    <style>
+
+        a.disabled {
+            display: none;
+        }
+
+        fieldset {
+            width: 100%;
+        }
+
+    </style>
+
 </head>
 
+<div class="text-center">
+
+    <p>Un tuo feedback prima di accedere alla votazione finale</p>
+
+    <p>Ti è piaciuto il Code in The Dark?</p>
+
+</div>
+
+
+<div class="flex-centered">
+
+    <fieldset>
+
+        <label for="radio-1">
+            <input type="radio" name="radio1" id="radio-1" value="yes" checked="checked"/> Sì
+        </label>
+
+        <br>
+
+
+        <label for="radio-2">
+            <input type="radio" name="radio1" id="radio-2" value="no" /> No
+        </label>
+
+    </fieldset>
+
+</div>
 
 <div class="text-center">
-    <h3>Feedback</h3>
 
-    <p>Lasciaci un feedback prima di terminare</p>
+
+    <p>Parteciperesti alla prossima edizione?</p>
 
 </div>
 
 <div class="flex-centered">
 
-    <div class="field-container  margin-top-4x">
+    <fieldset>
 
-        <input class="input field-input" placeholder=" " name="like" id="like" type="text">
-        <label class="field-placeholder" for="like">Ti è piaciuto l'evento?</label>
-    </div>
+        <label for="radio-3">
+            <input type="radio" name="radio2" id="radio-3" value="yes" checked="checked"/> Sì
+        </label>
+
+        <br>
+
+
+        <label for="radio-4">
+            <input type="radio" name="radio2" id="radio-4" value="no" /> No
+        </label>
+
+    </fieldset>
 
 </div>
 
@@ -34,7 +91,7 @@
     <div class="field-container  margin-top-4x">
 
         <input class="input field-input" placeholder=" " name="next" id="next" type="text">
-        <label class="field-placeholder" for="next">Vorresti partecipare al prossimo?</label>
+        <label class="field-placeholder" for="next">Da che città arrivi?</label>
     </div>
 
 </div>
@@ -47,11 +104,41 @@
 <script>
 
 
+
     var link = document.getElementById('submit-link');
+
+    var likeInput = document.querySelectorAll('[name="radio1"]');
+    var comebackInput = document.querySelectorAll('[name="radio2"]');
 
     var inputs = document.getElementsByClassName('input');
 
-    var props = {};
+    var props = {
+        like: 'yes',
+        comeback: 'yes'
+    };
+
+
+
+    for (var j = 0; j < likeInput.length; j++) {
+        likeInput[j].addEventListener('change', function() {
+            props.like = this.value;
+            buildQueryString()
+        })
+    }
+
+    for (var j = 0; j < comebackInput.length; j++) {
+        comebackInput[j].addEventListener('change', function() {
+            props.comeback = this.value;
+            buildQueryString()
+        })
+    }
+
+    function buildQueryString() {
+        var queryString = serialize(props);
+        console.log({queryString})
+        link.href = 'app://' + queryString;
+    }
+
 
     for (var i = 0; i < inputs.length; i++) {
 
@@ -73,6 +160,8 @@
             }
         return str.join("&");
     }
+
+    buildQueryString()
 
 </script>
 
