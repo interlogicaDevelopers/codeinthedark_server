@@ -8,6 +8,38 @@
 
     <link rel="stylesheet" href="/assets/content.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.2/mustache.min.js"></script>
+
+    <style>
+        .round-template {
+            border-top: 1px solid white;
+        }
+        .round-template img {
+            max-width: 100%;
+        }
+        .round-template a {
+            display: block;
+            color: #fff;
+        }
+
+        .slider {
+            overflow-y: hidden;
+            max-height: 1000px; /* approximate max height */
+
+            transition-property: all;
+            transition-duration: .5s;
+            transition-timing-function: linear;
+        }
+
+        .slider.closed {
+            max-height: 0;
+        }
+
+        a.round-name {
+            background: transparent;
+        }
+
+    </style>
 
 </head>
 
@@ -15,9 +47,76 @@
 
 <h1>GALLERY</h1>
 
-<p>
+<h5>
     Rivedi qui tutti i layout della serata.
-</p>
+</h5>
+
+<div id="layouts">
+
+</div>
+
+<script id="round-template" type="template">
+    <div class="round-template">
+        <h3><a href="#" onclick="return toggleSlider(event)">{{round.name}}</a></h3>
+
+        <div class="slider closed">
+            <h5>Layout da riprodurre</h5>
+
+            <img src="{{round.layout_url}}" alt="{{round.name}}">
+
+            <h5>Concorrenti</h5>
+
+            <ul>
+                {{#round.players}}
+                <li>
+                    <a href="{{preview_url}}">
+                        {{name}}
+                    </a>
+                </li>
+                {{/round.players}}
+            </ul>
+        </div>
+
+    </div>
+</script>
+
+<script>
+
+    const layoutsContainer = document.getElementById('layouts');
+    const roundTemplate = document.getElementById('round-template').innerHTML;
+
+    function fetchRounds() {
+        fetch('/round')
+            .then(resp => resp.json())
+            .then(resp => {
+
+                console.log("resp", resp);
+
+                resp.map(round => {
+                    const el = document.createElement('div');
+                    el.innerHTML = Mustache.render(roundTemplate, {round: round});
+                    layoutsContainer.append(el);
+                    return el;
+                })
+
+            })
+    }
+
+    function toggleSlider(ev) {
+        ev.preventDefault();
+
+        const target = ev.target;
+        const roundContainer = target.parentNode.parentNode;
+
+        const slider =  roundContainer.childNodes[3];
+        slider.classList.toggle('closed');
+
+    }
+
+    fetchRounds();
+
+
+</script>
 
 </body>
 </html>
