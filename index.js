@@ -9,6 +9,9 @@ const moment = require('moment-timezone');
 const fs = require('fs');
 const sharp = require('sharp');
 const puppeteer = require('puppeteer');
+const cheerio = require('cheerio');
+
+const AWS = require('aws-sdk');
 
 const Auth0Strategy = require('passport-auth0');
 const passport = require('passport');
@@ -45,6 +48,24 @@ const strategy = new Auth0Strategy({
 passport.use(strategy);
 
 const leftPadZero = val => val.toString().length === 2 ? val.toString() : '0' + val.toString();
+
+const stripTags = function (str, tags) {
+    var $ = cheerio.load(str);
+
+    if (!tags || tags.length === 0) {
+        return str;
+    }
+
+    tags = !Array.isArray(tags) ? [tags] : tags;
+    var len = tags.length;
+
+    while (len--) {
+        $(tags[len]).remove();
+    }
+
+    return $.html();
+};
+
 
 const app = express();
 app.use(cors());
@@ -109,8 +130,6 @@ app.get('/logout', wrap(async (req, res) => {
     req.logout();
     res.redirect('/');
 }));
-
-
 
 
 /*******************************************************************************
@@ -201,7 +220,7 @@ app.post('/get-layout', wrap(async (req, res) => {
     }
 
     console.log(req.body.player);
-    console.log(req.body.html);
+
 
     const dirName = __dirname + '/public/layouts/' + round[0]._id;
 
@@ -215,8 +234,35 @@ app.post('/get-layout', wrap(async (req, res) => {
     const width = 1920;
     const height = 1080;
 
+    const html = stripTags(req.body.html, ['iframe', 'script', 'link']);
+    // console.log(html);
+
     try {
-        fs.writeFileSync(fileName, req.body.html);
+        fs.writeFileSync(fileName, html);
+
+        const s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+        const htmlKey = round[0].name + '/' + req.body.player + '.html';
+        const fullPreviewUrlPngKey = round[0].name + '/' + req.body.player + '.html';
+        const previewUrlPngKey = round[0].name + '/' + req.body.player + '.html';
+
+        const s3HtmlObjectParams = {
+            Body: html,
+            Bucket: process.env.CITD_BUCKET,
+            ContentType: 'text/html',
+            Key: htmlKey,
+            ACL: 'public-read',
+        };
+
+        await s3.putObject(s3HtmlObjectParams).promise();
+
+        const S3HtmlUrl = s3.getSignedUrl('getObject', {
+            Bucket: process.env.CITD_BUCKET,
+            Key: htmlKey
+        });
+
+        console.log('S3Url', S3HtmlUrl);
+
 
         const browser = await puppeteer.launch({
             headless: true,
@@ -232,7 +278,8 @@ app.post('/get-layout', wrap(async (req, res) => {
         const previewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '_small.png';
 
 
-        await page.goto('http://localhost:3000' + previewUrl);
+        // await page.goto('http://localhost:3000' + previewUrl);
+        await page.goto(S3HtmlUrl);
         await page.screenshot({
             path: dirName + '/' + req.body.player + '.png',
             clip: {
@@ -243,11 +290,13 @@ app.post('/get-layout', wrap(async (req, res) => {
             }
         });
 
+        await browser.close();
+
         await sharp(dirName + '/' + req.body.player + '.png')
             .resize(width / 2, height / 2)
             .toFile(dirName + '/' + req.body.player + '_small.png');
 
-        await browser.close();
+
 
         const players = _.cloneDeep(round[0].players);
         const player = players.find(p => p.name === req.body.player);
@@ -372,7 +421,6 @@ app.get('/vote/:roundId/:uuid', wrap(async (req, res) => {
     res.status(200);
     res.send({});
     res.end();
-
 
 
 }));
@@ -888,7 +936,8 @@ app.post('/round', ensureLoggedIn, wrap(async (req, res) => {
         start: roundStart,
         end: roundEnd,
         vote_start: voteStart,
-        vote_end: voteEnd
+        vote_end: voteEnd,
+        instructions_url: req.body.instructions_url
     };
 
     console.log({round});
