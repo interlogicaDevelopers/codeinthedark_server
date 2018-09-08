@@ -117,7 +117,7 @@
         fetch(voteURL, {
             method: 'POST',
             body: JSON.stringify({
-                uuid: 'test'
+                uuid: state.userProfile.sub
             })
         })
             .then(resp => {
@@ -198,7 +198,7 @@
                 webAuth.client.userInfo(accessToken, function(err, profile) {
                     if (profile) {
                         state.userProfile = profile;
-                        alert(profile)
+                        // alert(profile)
                     }
                 });
             }
