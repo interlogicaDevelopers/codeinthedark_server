@@ -146,7 +146,7 @@
             domain: 'codeinthedarkve.eu.auth0.com',
             clientID: '6jXh1PMXdoj6GQdFYH2EjAMoAyCxPxHf',
             responseType: 'token id_token',
-            scope: 'openid email',
+            scope: 'openid',
             redirectUri: window.location.href,
 
         });
@@ -162,6 +162,8 @@
         }
 
         function handleAuthentication() {
+
+
             webAuth.parseHash(function(err, authResult) {
                 if (authResult && authResult.accessToken && authResult.idToken) {
                     window.location.hash = '';
@@ -173,6 +175,8 @@
                     alert(
                         'Error: ' + err.error + '. Check the console for further details.'
                     );
+                } else {
+                    webAuth.authorize();
                 }
             });
         }
@@ -202,9 +206,6 @@
 
         handleAuthentication();
 
-        if( !isAuthenticated()) {
-            webAuth.authorize();
-        }
 
     });
 
