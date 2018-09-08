@@ -86,6 +86,8 @@ passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
+app.use(bodyParser.json());
+
 const ensureAdmin = (req, res, next) =>  {
 
 
@@ -99,8 +101,6 @@ const ensureAdmin = (req, res, next) =>  {
     next();
 };
 
-
-app.use(bodyParser.json());
 
 const adminSockets = [];
 
@@ -388,7 +388,7 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
         throw error;
     }
 
-    console.log(req.params.roundId, req.body.uuid)
+    console.log(req.params.roundId, req.body)
 
     const foundVote = await Vote.find({
         round: req.params.roundId,
@@ -398,7 +398,7 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
     if (foundVote.length !== 0) {
         res.status(500);
         res.send({
-            message: 'Already voted'
+            message: 'Already voted',
         });
         res.end();
         return;
