@@ -1,0 +1,232 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title></title>
+    <meta name="description" content="Code in the dark Venice - vote page">
+    <meta name="author" content="Interlogica">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+
+    <style>
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.2/mustache.min.js"></script>
+    <script src="https://cdn.auth0.com/js/auth0/9.5.1/auth0.min.js"></script>
+</head>
+
+<body>
+
+<div>
+
+    <div id="vote-container"></div>
+
+
+</div>
+
+
+<script id="poll-template" type="template">
+    <h4>Players</h4>
+    <ul class="vote-list">
+        {{#round.players}}
+        <li>
+            <label for="{{_id}}">
+                <input type="radio" name="poll" id="{{_id}}"> {{name}}
+            </label>
+        </li>
+        {{/round.players}}
+    </ul>
+
+    <button type="button" onclick="return vote(event)">Vote</button>
+</script>
+
+
+<script>
+
+    const voteContainer = document.getElementById('vote-container');
+    const pollTemplate = document.getElementById('poll-template');
+
+    const HOST = 'http://localhost:3000';
+    // const HOST = "http://admin.codeinthedark.interlogica.it:3000";
+
+    const state = {
+        currentRound: undefined,
+        isFetching: false
+    };
+
+    function connect() {
+        const socket = io(HOST);
+        socket.on('message', onSocketMessage);
+    }
+
+    function onSocketMessage(message) {
+
+
+        if (message.type !== 'VOTE_COUNTDOWN') {
+            return renderNotVoting();
+        }
+
+        if (!state.currentRound && !state.isFetching) {
+            fetchRound(message.data.round)
+                .then(round => {
+                    state.currentRound = round;
+                    renderVotePoll()
+                })
+                .catch(error => {
+                    alert(error)
+                })
+        }
+    }
+
+    function renderNotVoting() {
+        console.log('NOT VOTING');
+        state.currentRound = undefined;
+        voteContainer.innerHTML = '<p>NOT VOTING</p>';
+    }
+
+    function renderVotePoll() {
+
+        console.log('rendering');
+
+        const template = pollTemplate.innerHTML;
+        voteContainer.innerHTML = Mustache.render(template, {
+            round: state.currentRound
+        });
+    }
+
+    function fetchRound(roundId) {
+        state.isFetching = true;
+        return fetch(HOST + '/round/' + roundId)
+            .then(response => response.json())
+            .then(round => {
+                state.isFetching = false;
+                return round;
+            })
+    }
+
+    function vote(event) {
+        event.preventDefault();
+        const voted = document.querySelector('input[name="poll"]:checked').id;
+
+        const voteURL = HOST + '/vote/' + state.currentRound._id + '/' + voted;
+
+        fetch(voteURL, {
+            method: 'POST',
+            body: JSON.stringify({
+                uuid: 'test'
+            })
+        })
+            .then(resp => {
+                if (resp.status !== 200) {
+                    alert('VOTE ERROR')
+                }
+                throw new Error('nope')
+            })
+            .then(response => {
+                alert('VOTE OK')
+            })
+
+    }
+
+    function init() {
+        connect()
+    }
+
+    document.addEventListener('DOMContentLoaded', event => {
+        init();
+    });
+
+    window.addEventListener('load', function () {
+
+        const webAuth = new auth0.WebAuth({
+            domain: 'codeinthedarkve.eu.auth0.com',
+            clientID: '6jXh1PMXdoj6GQdFYH2EjAMoAyCxPxHf',
+            responseType: 'token id_token',
+            scope: 'openid email',
+            redirectUri: window.location.href,
+
+        });
+
+        function setSession(authResult) {
+            // Set the time that the Access Token will expire at
+            const expiresAt = JSON.stringify(
+                authResult.expiresIn * 1000 + new Date().getTime()
+            );
+            localStorage.setItem('access_token', authResult.accessToken);
+            localStorage.setItem('id_token', authResult.idToken);
+            localStorage.setItem('expires_at', expiresAt);
+        }
+
+        function handleAuthentication() {
+            webAuth.parseHash(function(err, authResult) {
+                if (authResult && authResult.accessToken && authResult.idToken) {
+                    window.location.hash = '';
+                    setSession(authResult);
+                    // getProfile()
+                } else if (err) {
+                    console.log(err);
+                    console.log(err.errorDescription)
+                    alert(
+                        'Error: ' + err.error + '. Check the console for further details.'
+                    );
+                }
+            });
+        }
+
+        function getProfile() {
+            if (!state.userProfile) {
+                const accessToken = localStorage.getItem('access_token');
+
+                if (!accessToken) {
+                    console.log('Access Token must exist to fetch profile');
+                }
+                //
+                // fetch('/user')
+                //     .then(response => response.json())
+                //     .then(response => {
+                //         state.userProfile = response;
+                //     })
+
+                // webAuth.client.userInfo(accessToken, function(err, profile) {
+                //     if (profile) {
+                //         state.userProfile = profile;
+                //         alert(profile)
+                //     }
+                // });
+            }
+        }
+
+        handleAuthentication();
+
+        if( !isAuthenticated()) {
+            webAuth.authorize();
+        }
+
+    });
+
+    function isAuthenticated() {
+        // Check whether the current time is past the
+        // Access Token's expiry time
+        const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+        return new Date().getTime() < expiresAt;
+    }
+
+    function logout() {
+        // Remove tokens and expiry time from localStorage
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('id_token');
+        localStorage.removeItem('expires_at');
+    }
+
+
+
+
+
+
+</script>
+</body>
+</html>

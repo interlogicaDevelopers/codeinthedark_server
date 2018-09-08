@@ -86,6 +86,19 @@ passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
+const ensureAdmin = (req, res, next) =>  {
+
+
+    if (req.user.user_id !== 'google-oauth2|112769733839535796080') {
+        res.status(420);
+        res.end();
+        return;
+    }
+
+    // console.log(req.user)
+    next();
+};
+
 
 app.use(bodyParser.json());
 
@@ -115,12 +128,14 @@ app.get('/login',
 
 // Perform the final stage of authentication and redirect to '/user'
 app.get('/callback',
-    passport.authenticate('auth0', {failureRedirect: '/login'}),
+    passport.authenticate('auth0', {
+        failureRedirect: '/login'
+    }),
     wrap(async (req, res) => {
         if (!req.user) {
             throw new Error('user null');
         }
-        res.redirect("/admin");
+        res.redirect("/hippos");
     })
 );
 
@@ -372,6 +387,8 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
     if (error) {
         throw error;
     }
+
+    console.log(req.params.roundId, req.body.uuid)
 
     const foundVote = await Vote.find({
         round: req.params.roundId,
@@ -686,7 +703,7 @@ app.get('/', wrap(async (req, res) => {
     res.send('WELCOME')
 }));
 
-app.get('/admin', ensureLoggedIn, wrap(async (req, res) => {
+app.get('/hippos', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 
     const rounds = await Round.find();
     const players = await Player.find();
@@ -699,7 +716,7 @@ app.get('/admin', ensureLoggedIn, wrap(async (req, res) => {
 
 }));
 
-app.get('/admin/votes/:roundId', wrap(async (req, res) => {
+app.get('/admin/votes/:roundId', ensureAdmin, wrap(async (req, res) => {
 
     res.render('votes', {
         title: 'Votes',
@@ -707,7 +724,7 @@ app.get('/admin/votes/:roundId', wrap(async (req, res) => {
 
 }));
 
-app.get('/round-form', ensureLoggedIn, wrap(async (req, res) => {
+app.get('/round-form', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 
     const players = await Player.find();
 
@@ -728,7 +745,7 @@ app.get('/user', ensureLoggedIn, wrap(async (req, res) => {
 
 }));
 
-app.get('/player-form', ensureLoggedIn, wrap(async (req, res) => {
+app.get('/player-form', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 
     res.render('player-form', {
         title: 'Create Player'
@@ -749,14 +766,14 @@ app.get('/player-form', ensureLoggedIn, wrap(async (req, res) => {
  *
  ************************************************************************************/
 
-app.get('/sockets', ensureLoggedIn, wrap(async (req, res) => {
+app.get('/sockets', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
     res.json({
         sockets: Object.keys(io.sockets.sockets)
     });
     res.end();
 }));
 
-app.post('/round/start/:roundId', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/round/start/:roundId', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: false,
         running: true,
@@ -771,7 +788,7 @@ app.post('/round/start/:roundId', ensureLoggedIn, wrap(async (req, res) => {
 
 }));
 
-app.post('/round/next/:roundId', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/round/next/:roundId', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: false,
         running: false,
@@ -786,7 +803,7 @@ app.post('/round/next/:roundId', ensureLoggedIn, wrap(async (req, res) => {
 
 }));
 
-app.post('/round/stop/:roundId', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/round/stop/:roundId', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: false,
         running: false,
@@ -800,7 +817,7 @@ app.post('/round/stop/:roundId', ensureLoggedIn, wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/round/archive/:roundId', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/round/archive/:roundId', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: false,
         running: false,
@@ -814,7 +831,7 @@ app.post('/round/archive/:roundId', ensureLoggedIn, wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/round/startVote/:roundId', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/round/startVote/:roundId', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
     await Round.update({_id: req.params.roundId}, {
         voting: true,
         running: false,
@@ -828,7 +845,7 @@ app.post('/round/startVote/:roundId', ensureLoggedIn, wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/round/showResults/:roundId', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/round/showResults/:roundId', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 
     await Round.update({_id: req.params.roundId}, {
         voting: false,
@@ -843,7 +860,7 @@ app.post('/round/showResults/:roundId', ensureLoggedIn, wrap(async (req, res) =>
     res.end();
 }));
 
-app.post('/round/receiveLayouts/:roundId', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/round/receiveLayouts/:roundId', ensureLoggedIn, ensureAdmin,wrap(async (req, res) => {
 
     await Round.update({_id: req.params.roundId}, {
         voting: false,
@@ -858,7 +875,7 @@ app.post('/round/receiveLayouts/:roundId', ensureLoggedIn, wrap(async (req, res)
     res.end();
 }));
 
-app.post('/round/waiting/:roundId', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/round/waiting/:roundId', ensureLoggedIn, ensureAdmin,wrap(async (req, res) => {
 
     await Round.update({_id: req.params.roundId}, {
         voting: false,
@@ -873,7 +890,7 @@ app.post('/round/waiting/:roundId', ensureLoggedIn, wrap(async (req, res) => {
     res.end();
 }));
 
-app.post('/event/startCountDown', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/event/startCountDown', ensureLoggedIn, ensureAdmin,wrap(async (req, res) => {
 
     await Event.update({running_countdown: false}, {
         running_countdown: true
@@ -884,7 +901,7 @@ app.post('/event/startCountDown', ensureLoggedIn, wrap(async (req, res) => {
 
 }));
 
-app.post('/event/stopCountDown', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/event/stopCountDown', ensureLoggedIn, ensureAdmin,wrap(async (req, res) => {
 
     await Event.update({running_countdown: true}, {
         running_countdown: false
@@ -895,7 +912,7 @@ app.post('/event/stopCountDown', ensureLoggedIn, wrap(async (req, res) => {
 
 }));
 
-app.post('/round', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/round', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 
     const players = await Player.find({
         '_id': {$in: _.compact(req.body.players)}
@@ -951,7 +968,7 @@ app.post('/round', ensureLoggedIn, wrap(async (req, res) => {
 }));
 
 
-app.post('/create-player', ensureLoggedIn, wrap(async (req, res) => {
+app.post('/create-player', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 
     const player = {
         name: req.body.name
@@ -968,7 +985,7 @@ app.post('/create-player', ensureLoggedIn, wrap(async (req, res) => {
 }));
 
 
-app.delete('/round/:roundId', ensureLoggedIn, wrap(async (req, res) => {
+app.delete('/round/:roundId', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 
     await Round.deleteOne({_id: req.params.roundId});
 
@@ -977,7 +994,7 @@ app.delete('/round/:roundId', ensureLoggedIn, wrap(async (req, res) => {
 
 }));
 
-app.delete('/player/:playerId', ensureLoggedIn, wrap(async (req, res) => {
+app.delete('/player/:playerId', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 
     await Player.deleteOne({_id: req.params.playerId});
 
