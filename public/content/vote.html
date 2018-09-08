@@ -168,7 +168,7 @@
                 if (authResult && authResult.accessToken && authResult.idToken) {
                     window.location.hash = '';
                     setSession(authResult);
-                    // getProfile()
+                    getProfile()
                 } else if (err) {
                     console.log(err);
                     console.log(err.errorDescription)
@@ -195,12 +195,12 @@
                 //         state.userProfile = response;
                 //     })
 
-                // webAuth.client.userInfo(accessToken, function(err, profile) {
-                //     if (profile) {
-                //         state.userProfile = profile;
-                //         alert(profile)
-                //     }
-                // });
+                webAuth.client.userInfo(accessToken, function(err, profile) {
+                    if (profile) {
+                        state.userProfile = profile;
+                        alert(profile)
+                    }
+                });
             }
         }
 
