@@ -127,11 +127,12 @@
             .then(resp => {
                 if (resp.status !== 200) {
                     alert('VOTE ERROR')
+                    throw new Error('nope')
                 }
-                throw new Error('nope')
+                return resp;
             })
             .then(response => {
-                alert('VOTE OK')
+                alert('Good dog')
             })
 
     }
