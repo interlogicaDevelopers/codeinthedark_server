@@ -320,7 +320,7 @@ app.post('/get-layout', wrap(async (req, res) => {
         const s3FullPreviewObjectParams = {
             Body: fullPreviewData,
             Bucket: process.env.CITD_BUCKET,
-            ContentType: 'text/html',
+            ContentType: 'image/png',
             Key: fullPreviewUrlPngKey,
             ACL: 'public-read',
         };
@@ -338,7 +338,7 @@ app.post('/get-layout', wrap(async (req, res) => {
         const s3SmallPreviewObjectParams = {
             Body: smallPreviewData,
             Bucket: process.env.CITD_BUCKET,
-            ContentType: 'text/html',
+            ContentType: 'image/png',
             Key: previewUrlPngKey,
             ACL: 'public-read',
         };
