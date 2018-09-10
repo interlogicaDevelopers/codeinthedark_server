@@ -12,6 +12,7 @@ const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 
 const AWS = require('aws-sdk');
+const request = require('request');
 
 const Auth0Strategy = require('passport-auth0');
 const passport = require('passport');
@@ -250,7 +251,6 @@ app.post('/get-layout', wrap(async (req, res) => {
     const height = 1080;
 
     const html = stripTags(req.body.html, ['iframe', 'script', 'link']);
-    // console.log(html);
 
     try {
         fs.writeFileSync(fileName, html);
@@ -271,11 +271,6 @@ app.post('/get-layout', wrap(async (req, res) => {
 
         await s3.putObject(s3HtmlObjectParams).promise();
 
-        // const S3HtmlUrl = s3.getSignedUrl('getObject', {
-        //     Bucket: process.env.CITD_BUCKET,
-        //     Key: htmlKey
-        // });
-
         const bucketUrl = 'https://' + process.env.CITD_BUCKET + '.s3.amazonaws.com/';
 
         const S3HtmlUrl = bucketUrl + htmlKey;
@@ -291,11 +286,6 @@ app.post('/get-layout', wrap(async (req, res) => {
         });
         const page = await browser.newPage();
         page.setViewport({width, height});
-
-        // const previewUrl = '/layouts/' + round[0]._id + '/' + req.body.player + '.html';
-        // const fullPreviewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '.png';
-        // const previewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '_small.png';
-
 
         // await page.goto('http://localhost:3000' + previewUrl);
         await page.goto(S3HtmlUrl);
@@ -315,10 +305,6 @@ app.post('/get-layout', wrap(async (req, res) => {
             .resize(width / 2, height / 2)
             .toFile(dirName + '/' + req.body.player + '_small.png');
 
-
-
-
-
         const fullPreviewData = fs.readFileSync(dirName + '/' + req.body.player + '.png');
 
         const s3FullPreviewObjectParams = {
@@ -330,11 +316,6 @@ app.post('/get-layout', wrap(async (req, res) => {
         };
 
         await s3.putObject(s3FullPreviewObjectParams).promise();
-
-        // const S3PreviewUrl = s3.getSignedUrl('getObject', {
-        //     Bucket: process.env.CITD_BUCKET,
-        //     Key: fullPreviewUrlPngKey
-        // });
 
         const S3PreviewUrl = bucketUrl + fullPreviewUrlPngKey;
 
@@ -350,18 +331,11 @@ app.post('/get-layout', wrap(async (req, res) => {
 
         await s3.putObject(s3SmallPreviewObjectParams).promise();
 
-        // const S3SmallPreviewUrl = s3.getSignedUrl('getObject', {
-        //     Bucket: process.env.CITD_BUCKET,
-        //     Key: fullPreviewUrlPngKey
-        // });
-
         const S3SmallPreviewUrl = bucketUrl + fullPreviewUrlPngKey;
 
         const players = _.cloneDeep(round[0].players);
         const player = players.find(p => p.name === req.body.player);
-        // player.full_preview_url = DOMAIN + fullPreviewUrlPng;
         player.full_preview_url = S3PreviewUrl;
-        // player.preview_url = DOMAIN + previewUrlPng;
         player.preview_url = S3SmallPreviewUrl;
 
         await Round.findByIdAndUpdate(round[0]._id, {
@@ -457,6 +431,10 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
         voter: req.body.voter
     });
     await vote.save();
+
+    request('ec2-34-254-251-17.eu-west-1.compute.amazonaws.com:3000/mine/' + req.body.uuid + '/' + req.params.roundId + '/' + req.params.playerId, () => {
+        console.log('BLOCKCHAINED!!!')
+    });
 
     res.send({
         message: 'Vote OK'

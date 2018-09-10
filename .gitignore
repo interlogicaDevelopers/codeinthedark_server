@@ -61,7 +61,10 @@ typings/
 
 .idea
 
+dist_vote
+
 deploy.sh
+deploy_vote.sh
 /public/layouts/*
 !/public/layouts/index.html
 ecosystem.config.js

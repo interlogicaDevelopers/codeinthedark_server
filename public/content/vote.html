@@ -11,7 +11,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 
     <style>
-
+        body {
+            background: #000 url('./sfondo.jpg')
+        }
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
@@ -126,7 +128,7 @@
         })
             .then(resp => {
                 if (resp.status !== 200) {
-                    alert('VOTE ERROR')
+                    alert('VOTE ERROR');
                     throw new Error('nope')
                 }
                 return resp;
@@ -169,13 +171,13 @@
                 if (authResult && authResult.accessToken && authResult.idToken) {
                     window.location.hash = '';
                     setSession(authResult);
-                    getProfile()
+                    getProfile();
 
                     init();
 
                 } else if (err) {
                     console.log(err);
-                    console.log(err.errorDescription)
+                    console.log(err.errorDescription);
                     alert(
                         'Error: ' + err.error + '. Check the console for further details.'
                     );
