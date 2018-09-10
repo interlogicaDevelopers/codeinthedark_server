@@ -271,7 +271,7 @@ app.post('/get-layout', wrap(async (req, res) => {
 
         await s3.putObject(s3HtmlObjectParams).promise();
 
-        const bucketUrl = 'https://' + process.env.CITD_BUCKET + '.s3.amazonaws.com/';
+        const bucketUrl = 'http://' + process.env.CITD_BUCKET + '.s3.amazonaws.com/';
 
         const S3HtmlUrl = bucketUrl + htmlKey;
 

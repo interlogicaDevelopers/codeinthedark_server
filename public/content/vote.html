@@ -8,11 +8,14 @@
     <meta name="description" content="Code in the dark Venice - vote page">
     <meta name="author" content="Interlogica">
 
+    <link rel="stylesheet" href="carousel.css">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 
     <style>
         body {
-            background: #000 url('./sfondo.jpg')
+            background: #000 url('sfondo.jpg')
+            color: #fff;
         }
     </style>
 
@@ -25,27 +28,129 @@
 
 <div>
 
+    <div class="carousel-container">
+        <h2>Vote</h2>
+        <ul class="carousel my-carousel">
+            <input class="carousel__activator" type="radio" id="A" name="activator" checked="checked"/>
+            <input class="carousel__activator" type="radio" id="B" name="activator"/>
+            <input class="carousel__activator" type="radio" id="C" name="activator"/>
+            <input class="carousel__activator" type="radio" id="D" name="activator"/>
+            <input class="carousel__activator" type="radio" id="E" name="activator"/>
+            <div class="carousel__controls">
+                <label class="carousel__control carousel__control--backward" for="E"></label>
+                <label class="carousel__control carousel__control--forward" for="B"></label>
+            </div>
+            <div class="carousel__controls">
+                <label class="carousel__control carousel__control--backward" for="A"></label>
+                <label class="carousel__control carousel__control--forward" for="C"></label>
+            </div>
+            <div class="carousel__controls">
+                <label class="carousel__control carousel__control--backward" for="B"></label>
+                <label class="carousel__control carousel__control--forward" for="D"></label>
+            </div>
+            <div class="carousel__controls">
+                <label class="carousel__control carousel__control--backward" for="C"></label>
+                <label class="carousel__control carousel__control--forward" for="E"></label>
+            </div>
+            <div class="carousel__controls">
+                <label class="carousel__control carousel__control--backward" for="D"></label>
+                <label class="carousel__control carousel__control--forward" for="A"></label>
+            </div>
+            <li class="carousel__slide">
+                <h1>A</h1>
+            </li>
+            <li class="carousel__slide">
+                <h1>B</h1>
+            </li>
+            <li class="carousel__slide">
+                <h1>C</h1>
+            </li>
+            <li class="carousel__slide">
+                <h1>D</h1>
+            </li>
+            <li class="carousel__slide">
+                <h1>E</h1>
+            </li>
+            <div class="carousel__indicators">
+                <label class="carousel__indicator" for="A"></label>
+                <label class="carousel__indicator" for="B"></label>
+                <label class="carousel__indicator" for="C"></label>
+                <label class="carousel__indicator" for="D"></label>
+                <label class="carousel__indicator" for="E"></label>
+            </div>
+        </ul>
+    </div>
+
     <div id="vote-container"></div>
 
 
 </div>
 
 
+<!--<script id="poll-template" type="template">-->
+    <!--<h4>Players</h4>-->
+    <!--<ul class="vote-list">-->
+        <!--{{#round.players}}-->
+        <!--<li>-->
+            <!--<label for="{{_id}}">-->
+                <!--<input type="radio" name="poll" id="{{_id}}"> {{name}}-->
+            <!--</label>-->
+        <!--</li>-->
+        <!--{{/round.players}}-->
+    <!--</ul>-->
+
+    <!--<button type="button" onclick="return vote(event)">Vote</button>-->
+<!--</script>-->
+
 <script id="poll-template" type="template">
-    <h4>Players</h4>
-    <ul class="vote-list">
+    <h2>Vote</h2>
+    <ul class="carousel my-carousel">
         {{#round.players}}
-        <li>
-            <label for="{{_id}}">
-                <input type="radio" name="poll" id="{{_id}}"> {{name}}
-            </label>
+        <input class="carousel__activator" type="radio" id="{{name}}" name="activator"/>
+        {{/round.players}}
+
+        {{#round.players}}
+        <div class="carousel__controls">
+            <label class="carousel__control carousel__control--backward" for="{{prev}}"></label>
+            <label class="carousel__control carousel__control--forward" for="{{next}}"></label>
+        </div>
+        {{/round.players}}
+
+        <!--<div class="carousel__controls">-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;backward" for="E"></label>-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;forward" for="B"></label>-->
+        <!--</div>-->
+        <!--<div class="carousel__controls">-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;backward" for="A"></label>-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;forward" for="C"></label>-->
+        <!--</div>-->
+        <!--<div class="carousel__controls">-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;backward" for="B"></label>-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;forward" for="D"></label>-->
+        <!--</div>-->
+        <!--<div class="carousel__controls">-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;backward" for="C"></label>-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;forward" for="E"></label>-->
+        <!--</div>-->
+        <!--<div class="carousel__controls">-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;backward" for="D"></label>-->
+            <!--<label class="carousel__control carousel__control&#45;&#45;forward" for="A"></label>-->
+        <!--</div>-->
+
+        {{#round.players}}
+        <li class="carousel__slide">
+            <h1>{{name}}</h1>
         </li>
         {{/round.players}}
+
+
+        <div class="carousel__indicators">
+            {{#round.players}}
+            <label class="carousel__indicator" for="{{name}}" style="background:url('{{preview_url}}')"></label>
+            {{/round.players}}
+        </div>
     </ul>
-
-    <button type="button" onclick="return vote(event)">Vote</button>
 </script>
-
 
 <script>
 
@@ -96,7 +201,13 @@
 
         const template = pollTemplate.innerHTML;
         voteContainer.innerHTML = Mustache.render(template, {
-            round: state.currentRound
+            round: state.currentRound,
+            prev: function() {
+                return "PREV"
+            },
+            next: function() {
+                return "NEXT"
+            }
         });
     }
 
