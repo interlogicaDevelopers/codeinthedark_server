@@ -141,10 +141,6 @@
         connect()
     }
 
-    document.addEventListener('DOMContentLoaded', event => {
-        init();
-    });
-
     window.addEventListener('load', function () {
 
         const webAuth = new auth0.WebAuth({
@@ -174,6 +170,9 @@
                     window.location.hash = '';
                     setSession(authResult);
                     getProfile()
+
+                    init();
+
                 } else if (err) {
                     console.log(err);
                     console.log(err.errorDescription)
