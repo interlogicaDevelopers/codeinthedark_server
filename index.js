@@ -258,8 +258,8 @@ app.post('/get-layout', wrap(async (req, res) => {
         const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
         const htmlKey = round[0].name + '/' + req.body.player + '.html';
-        const fullPreviewUrlPngKey = round[0].name + '/' + req.body.player + '.html';
-        const previewUrlPngKey = round[0].name + '/' + req.body.player + '.html';
+        const fullPreviewUrlPngKey = round[0].name + '/' + req.body.player + '.png';
+        const previewUrlPngKey = round[0].name + '/' + req.body.player + '_small.png';
 
         const s3HtmlObjectParams = {
             Body: html,
@@ -312,10 +312,27 @@ app.post('/get-layout', wrap(async (req, res) => {
             .toFile(dirName + '/' + req.body.player + '_small.png');
 
 
+        const previewData = fs.readFileSync(dirName + '/' + req.body.player + '.png');
+
+        const s3PreviewObjectParams = {
+            Body: previewData,
+            Bucket: process.env.CITD_BUCKET,
+            ContentType: 'text/html',
+            Key: fullPreviewUrlPngKey,
+            ACL: 'public-read',
+        };
+
+        await s3.putObject(s3PreviewObjectParams).promise();
+
+        const S3PreviewUrl = s3.getSignedUrl('getObject', {
+            Bucket: process.env.CITD_BUCKET,
+            Key: htmlKey
+        });
 
         const players = _.cloneDeep(round[0].players);
         const player = players.find(p => p.name === req.body.player);
-        player.full_preview_url = DOMAIN + fullPreviewUrlPng;
+        // player.full_preview_url = DOMAIN + fullPreviewUrlPng;
+        player.full_preview_url = S3PreviewUrl;
         player.preview_url = DOMAIN + previewUrlPng;
 
         await Round.findByIdAndUpdate(round[0]._id, {
