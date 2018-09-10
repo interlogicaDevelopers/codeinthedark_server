@@ -432,7 +432,11 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
     });
     await vote.save();
 
-    request(process.env.BLOCKCHAIN_ENDPOINT + '/mine/' + req.body.uuid + '/' + req.params.roundId + '/' + req.params.playerId, (err, resp) => {
+    const BLOCKCHAIN_URL = process.env.BLOCKCHAIN_ENDPOINT + '/mine/' + req.body.uuid + '/' + req.params.roundId + '/' + req.params.playerId
+
+    console.log(BLOCKCHAIN_URL);
+
+    request(BLOCKCHAIN_URL, (err, resp) => {
         console.log('VOTE', req.body.uuid , req.params.roundId, req.params.playerId)
         if (err) {
             console.log('blockchain fail!!!', JSON.stringify(err))
