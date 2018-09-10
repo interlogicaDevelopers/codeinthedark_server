@@ -432,7 +432,7 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
     });
     await vote.save();
 
-    request('ec2-34-254-251-17.eu-west-1.compute.amazonaws.com:3000/mine/' + req.body.uuid + '/' + req.params.roundId + '/' + req.params.playerId, () => {
+    request(process.env.BLOCKCHAIN_ENDPOINT + '/mine/' + req.body.uuid + '/' + req.params.roundId + '/' + req.params.playerId, () => {
         console.log('BLOCKCHAINED!!!')
     });
 
