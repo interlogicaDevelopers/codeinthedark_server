@@ -271,10 +271,14 @@ app.post('/get-layout', wrap(async (req, res) => {
 
         await s3.putObject(s3HtmlObjectParams).promise();
 
-        const S3HtmlUrl = s3.getSignedUrl('getObject', {
-            Bucket: process.env.CITD_BUCKET,
-            Key: htmlKey
-        });
+        // const S3HtmlUrl = s3.getSignedUrl('getObject', {
+        //     Bucket: process.env.CITD_BUCKET,
+        //     Key: htmlKey
+        // });
+
+        const bucketUrl = 'https://' + process.env.CITD_BUCKET + '.s3.amazonaws.com/';
+
+        const S3HtmlUrl = bucketUrl + htmlKey;
 
         console.log('S3Url', S3HtmlUrl);
 
@@ -288,9 +292,9 @@ app.post('/get-layout', wrap(async (req, res) => {
         const page = await browser.newPage();
         page.setViewport({width, height});
 
-        const previewUrl = '/layouts/' + round[0]._id + '/' + req.body.player + '.html';
-        const fullPreviewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '.png';
-        const previewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '_small.png';
+        // const previewUrl = '/layouts/' + round[0]._id + '/' + req.body.player + '.html';
+        // const fullPreviewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '.png';
+        // const previewUrlPng = '/layouts/' + round[0]._id + '/' + req.body.player + '_small.png';
 
 
         // await page.goto('http://localhost:3000' + previewUrl);
@@ -327,11 +331,12 @@ app.post('/get-layout', wrap(async (req, res) => {
 
         await s3.putObject(s3FullPreviewObjectParams).promise();
 
-        const S3PreviewUrl = s3.getSignedUrl('getObject', {
-            Bucket: process.env.CITD_BUCKET,
-            Key: fullPreviewUrlPngKey
-        });
+        // const S3PreviewUrl = s3.getSignedUrl('getObject', {
+        //     Bucket: process.env.CITD_BUCKET,
+        //     Key: fullPreviewUrlPngKey
+        // });
 
+        const S3PreviewUrl = bucketUrl + fullPreviewUrlPngKey;
 
         const smallPreviewData = fs.readFileSync(dirName + '/' + req.body.player + '_small.png');
 
@@ -345,10 +350,12 @@ app.post('/get-layout', wrap(async (req, res) => {
 
         await s3.putObject(s3SmallPreviewObjectParams).promise();
 
-        const S3SmallPreviewUrl = s3.getSignedUrl('getObject', {
-            Bucket: process.env.CITD_BUCKET,
-            Key: fullPreviewUrlPngKey
-        });
+        // const S3SmallPreviewUrl = s3.getSignedUrl('getObject', {
+        //     Bucket: process.env.CITD_BUCKET,
+        //     Key: fullPreviewUrlPngKey
+        // });
+
+        const S3SmallPreviewUrl = bucketUrl + fullPreviewUrlPngKey;
 
         const players = _.cloneDeep(round[0].players);
         const player = players.find(p => p.name === req.body.player);
