@@ -55,18 +55,28 @@
     <button type="button" onclick="return vote(event)">Vote</button>
 </script>
 
+<script id="already-voted-template" type="template">
+    <h4 class="already-voted">HAI GIA' VOTATO PER QUESTO ROUND!</h4>
+</script>
+
+<script type="template" id="thank-you-template">
+    <h4 class="thank-you">GRAZIE PER AVER VOTATO</h4>
+</script>
 
 <script>
 
     const voteContainer = document.getElementById('vote-container');
     const pollTemplate = document.getElementById('poll-template');
+    const alreadyVotedTemplate = document.getElementById('already-voted-template');
+    const thankYouTemplate = document.getElementById('thank-you-template');
 
     // const HOST = 'http://localhost:3000';
     const HOST = "http://admin.codeinthedark.interlogica.it:3000";
 
     const state = {
         currentRound: undefined,
-        isFetching: false
+        isFetching: false,
+        votes: {}
     };
 
     function connect() {
@@ -88,7 +98,7 @@
                     renderVotePoll()
                 })
                 .catch(error => {
-                    alert(error)
+                    console.error(error);
                 })
         }
     }
@@ -100,16 +110,30 @@
     }
 
     function renderVotePoll() {
+        let template
 
-        console.log('rendering');
+        if (!state.votes[state.currentRound._id]) {
+            template = pollTemplate.innerHTML;   
+            voteContainer.innerHTML = Mustache.render(template, {
+                round: state.currentRound
+            });    
+        } else {
+            renderAlreadyVoted()
+        }
+        
+    }
 
-        const template = pollTemplate.innerHTML;
+    function renderAlreadyVoted() {
+        let template = alreadyVotedTemplate.innerHTML;
         voteContainer.innerHTML = Mustache.render(template, {
-            round: state.currentRound,
-            prev: function() {
+            round: state.currentRound
+        });   
+    }
 
-            },
-
+    function renderThankYou() {
+        let template = thankYouTemplate.innerHTML;
+        voteContainer.innerHTML = Mustache.render(template, {
+            round: state.currentRound
         });
     }
 
@@ -142,12 +166,15 @@
             .then(resp => {
                 if (resp.status !== 200) {
                     alert('VOTE ERROR');
+                    renderAlreadyVoted();
                     throw new Error('nope')
                 }
                 return resp;
             })
             .then(response => {
-                alert('Good dog')
+                state.votes[state.currentRound._id] = +new Date();
+                // renderVotePoll()
+                renderThankYou()
             })
 
     }
@@ -207,12 +234,6 @@
                 if (!accessToken) {
                     console.log('Access Token must exist to fetch profile');
                 }
-                //
-                // fetch('/user')
-                //     .then(response => response.json())
-                //     .then(response => {
-                //         state.userProfile = response;
-                //     })
 
                 webAuth.client.userInfo(accessToken, function(err, profile) {
                     if (profile) {
