@@ -63,6 +63,8 @@ typings/
 
 dist_vote
 
+data
+
 deploy.sh
 deploy_vote.sh
 /public/layouts/*
