@@ -91,8 +91,12 @@ app.use(bodyParser.json());
 
 const ensureAdmin = (req, res, next) =>  {
 
+    const allowedUsers = [
+        'google-oauth2|115414053824006736385',
+        'google-oauth2|112769733839535796080'
+    ];
 
-    if (req.user.user_id !== 'google-oauth2|112769733839535796080') {
+    if (!allowedUsers.includes(req.user.user_id)) {
         res.status(420);
         res.end();
         return;
