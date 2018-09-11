@@ -3,7 +3,6 @@ const _ = require('lodash');
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
-const aws = require('aws-sdk');
 const bodyParser = require('body-parser');
 const moment = require('moment-timezone');
 const fs = require('fs');
@@ -13,6 +12,7 @@ const cheerio = require('cheerio');
 
 const AWS = require('aws-sdk');
 const request = require('request');
+const requestPromise = require('request-promise');
 
 const Auth0Strategy = require('passport-auth0');
 const passport = require('passport');
@@ -51,14 +51,14 @@ passport.use(strategy);
 const leftPadZero = val => val.toString().length === 2 ? val.toString() : '0' + val.toString();
 
 const stripTags = function (str, tags) {
-    var $ = cheerio.load(str);
+    const $ = cheerio.load(str);
 
     if (!tags || tags.length === 0) {
         return str;
     }
 
     tags = !Array.isArray(tags) ? [tags] : tags;
-    var len = tags.length;
+    let len = tags.length;
 
     while (len--) {
         $(tags[len]).remove();
@@ -118,6 +118,53 @@ const {Player, Round, Vote, Event, User, Feedback} = require('./db');
  *
  *
  ****************************************************************************/
+
+let apiAccessToken = '';
+
+const getAuth0APIToken = function() {
+    const options = { method: 'POST',
+        url: 'https://'+ process.env.AUTH_DOMAIN +'/oauth/token',
+        headers: { 'content-type': 'application/json' },
+        body:
+            { grant_type: 'client_credentials',
+                client_id: process.env.AUTH_API_CLIENT_ID,
+                client_secret:process.env. AUTH_API_SECRET,
+                audience: 'https://'+ process.env.AUTH_DOMAIN +'/api/v2/' },
+        json: true };
+
+    requestPromise(options)
+        .then(response => {
+            apiAccessToken = response.access_token;
+            console.log("GOT API ACCESS TOKEN");
+        })
+        .catch(error => {
+            console.log("API ACCESS TOKEN ERROR");
+            console.error(error)
+        })
+};
+
+setInterval(() => {
+    getAuth0APIToken();
+}, 1000 * 7000);
+
+const getAuth0User = function(id) {
+
+    const options = {
+        url: 'https://'+ process.env.AUTH_DOMAIN +'/api/v2/users/' + id,
+        headers: {
+            'content-type': 'application/json',
+            'authorization': 'Bearer ' + apiAccessToken
+        },
+        json: true
+    };
+
+    return requestPromise(options)
+};
+
+
+getAuth0APIToken();
+
+
 
 // Perform the login, after login Auth0 will redirect to callback
 app.get('/login',
@@ -277,7 +324,6 @@ app.post('/get-layout', wrap(async (req, res) => {
 
         console.log('S3Url', S3HtmlUrl);
 
-
         const browser = await puppeteer.launch({
             headless: true,
             args: [
@@ -410,6 +456,19 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
 
     console.log(req.params.roundId, req.body)
 
+    // CHECK USER
+    let auth0User;
+    try {
+        auth0User = await getAuth0User(req.body.uuid);
+    } catch (error) {
+        res.status(500);
+        res.send({
+            message: 'Invalid User',
+        });
+        res.end();
+        return;
+    }
+
     const foundVote = await Vote.find({
         round: req.params.roundId,
         uuid: req.body.uuid
@@ -428,7 +487,7 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
         vote_for: req.params.playerId,
         round: req.params.roundId,
         uuid: req.body.uuid,
-        voter: req.body.voter
+        voter: auth0User
     });
     await vote.save();
 
