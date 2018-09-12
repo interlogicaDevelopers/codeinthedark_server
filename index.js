@@ -491,7 +491,7 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
         vote_for: req.params.playerId,
         round: req.params.roundId,
         uuid: req.body.uuid,
-        voter: auth0User
+        voter: {}
     });
     await vote.save();
 
