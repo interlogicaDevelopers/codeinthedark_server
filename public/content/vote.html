@@ -71,7 +71,7 @@
             font-family: 'Roboto Mono', monospace;
             background-image: url('./sfondo.jpg');
             color: #fff;
-            padding-bottom: 30px;
+            padding-bottom: 100px;
         }
 
         header {
@@ -113,15 +113,50 @@
             border-top: 1px dashed #fff;
         }
 
-        .vote-list li label span {
+        .vote-list li label:last-child {
+            border-bottom: 1px dashed #fff;
+        }
+
+        .vote-list li label span.check-line {
             padding-left: 10px;
             display: block;
             height: 100%;
         }
 
-        .vote-list li label input:checked + span {
+        .vote-list li label span.check-line span.checkmark {
+            display: inline-block;
+            position: relative;
+            top: 8px;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: #eee;
+            border-radius: 50%;
+        }
+
+        .vote-list li label span.check-line span.checkmark:after {
+            content: ' ';
+            position: relative;
+            top: 9px;
+            left: 8px;
+            width: 8px;
+            height: 7px;
+            border-radius: 50%;
+            background: white;
+            display: none;
+        }
+
+        .vote-list li label input:checked + span.check-line {
             background-color: #fff;
             color: #9351d5;
+        }
+
+        .vote-list li label input:checked + span.check-line span.checkmark {
+            background-color: #9351d5;
+        }
+
+        .vote-list li label input:checked + span.check-line span.checkmark:after {
+            display: block;
         }
 
         .vote-list li label input {
@@ -130,13 +165,19 @@
 
         .vote-list li label img {
             float: right;
-            height: 50px;
-            max-height: 50px;
+            height: 40px;
+            max-height: 40px;
             display: block;
+            margin-top: 5px;
+            margin-right: 5px;
+        }
+
+        .vote-list li label img:after {
+            content: ''
         }
 
         .vote-button-container {
-            padding: 5px 0;
+            padding: 10px 0;
             text-align: center;
         }
 
@@ -145,6 +186,7 @@
             font-weight: bold;
             padding-left: 30px;
             padding-right: 30px;
+            font-size: 20px;
             line-height: 50px;
             color: #fff;
             text-transform: uppercase;
@@ -245,10 +287,13 @@
 
 <script id="poll-template" type="template">
 
+    <p style="text-align: center; padding: 10px 0;">Layout da riprodurre</p>
 
     <div id="layout">
         <img src="{{round.layout_url}}">
     </div>
+
+    <p style="text-align: center; padding: 10px 0;">Vota il tuo layout preferito</p>
 
     <ul class="vote-list">
         {{#round.players}}
@@ -257,7 +302,10 @@
 
                 <input type="radio" name="poll" id="{{_id}}">
 
-                <span>
+                <span class="check-line">
+
+                    <span class="checkmark"></span>
+
                     {{name}}
                     <a href="{{preview_url}}" target="_blank">
                         <img src="{{preview_url}}" alt="{{name}}">
@@ -512,9 +560,10 @@
                 } else if (err) {
                     console.log(err);
                     console.log(err.errorDescription);
-                    alert(
-                        'Error: ' + err.error + '. Check the console for further details.'
-                    );
+                    // alert(
+                    //     'Error: ' + err.error + '. Check the console for further details.'
+                    // );
+                    window.location.hash = '';
                 } else {
                     webAuth.authorize();
                 }
