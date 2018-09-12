@@ -8,15 +8,184 @@
     <meta name="description" content="Code in the dark Venice - vote page">
     <meta name="author" content="Interlogica">
 
-    <link rel="stylesheet" href="carousel.css">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+
     <style>
-        body {
-            background: #000 url('sfondo.jpg')
-            color: #fff;
+        /* RESET */
+        html, body, div, span, applet, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        a, abbr, acronym, address, big, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        small, strike, strong, sub, sup, tt, var,
+        b, u, i, center,
+        dl, dt, dd, ol, ul, li,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed,
+        figure, figcaption, footer, header, hgroup,
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
         }
+
+        /* HTML5 display-role reset for older browsers */
+        article, aside, details, figcaption, figure,
+        footer, header, hgroup, menu, nav, section {
+            display: block;
+        }
+
+        body {
+            line-height: 1;
+        }
+
+        ol, ul {
+            list-style: none;
+        }
+
+        blockquote, q {
+            quotes: none;
+        }
+
+        blockquote:before, blockquote:after,
+        q:before, q:after {
+            content: '';
+            content: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        /* END RESET */
+
+        html, body {
+            height: 100%;
+            font-family: 'Roboto Mono', monospace;
+            background-image: url('./sfondo.jpg');
+            color: #fff;
+            padding-bottom: 30px;
+        }
+
+        header {
+            text-align: center;
+            height: 50px;
+            width: 100%;
+            background-color: #9351d5;
+        }
+
+        header img {
+            width: 120px;
+            margin-top: 5px;
+        }
+
+        .aligner {
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .aligner-item {
+            flex: none;
+        }
+
+        .aligned-content {
+            width: 100%;
+            text-align: center;
+        }
+
+        .not-voting-content img {
+            max-width: 50%;
+            margin-bottom: 30px;
+        }
+
+        .vote-list li label {
+            display: block;
+            line-height: 50px;
+            border-top: 1px dashed #fff;
+        }
+
+        .vote-list li label span {
+            padding-left: 10px;
+            display: block;
+            height: 100%;
+        }
+
+        .vote-list li label input:checked + span {
+            background-color: #fff;
+            color: #9351d5;
+        }
+
+        .vote-list li label input {
+            display: none;
+        }
+
+        .vote-list li label img {
+            float: right;
+            height: 50px;
+            max-height: 50px;
+            display: block;
+        }
+
+        .vote-button-container {
+            padding: 5px 0;
+            text-align: center;
+        }
+
+        #vote-button {
+            border: 0px;
+            font-weight: bold;
+            padding-left: 30px;
+            padding-right: 30px;
+            line-height: 50px;
+            color: #fff;
+            text-transform: uppercase;
+            background-color: #9351d5;
+        }
+
+        #layout img {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            background: #000;
+            display: none;
+        }
+
+        #overlay.is-visible {
+            display: block;
+        }
+
+        footer {
+            position: fixed;
+            height: 20px;
+            bottom: 0;
+            color: gray;
+            background: #9351d5;
+            width: 100%;
+            text-align: center;
+        }
+
+        footer a {
+            color: gray;
+        }
+
     </style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
@@ -27,16 +196,60 @@
 <body>
 
 <div>
+    <header>
+        <img src="logo-app-code-inizio-fine.png">
+    </header>
 
 
-    <div id="vote-container"></div>
+    <div id="vote-container">
 
+        <div class="aligner">
+            <div class="aligner-item">
+                <div class="aligned-content">
+                    <p>L04d1ng...</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <footer>
+        <a href="https://s3-eu-west-1.amazonaws.com/citd.interlogica/privacy.html" target="_blank">privacy policy</a>
+    </footer>
+
+    <div id="overlay">
+        <div class="aligner">
+            <div class="aligner-item">
+                <div class="aligned-content ">
+                    <p>Making dreams come true...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 
+<script type="template" id="not-voting-template">
+
+    <div class="aligner">
+        <div class="aligner-item">
+            <div class="aligned-content not-voting-content">
+                <img src="logo-app-code-inizio-fine.png">
+                <p>Aspetta il momento di votare</p>
+            </div>
+        </div>
+    </div>
+
+</script>
 
 <script id="poll-template" type="template">
-    <h4>Players</h4>
+
+
+    <div id="layout">
+        <img src="{{round.layout_url}}">
+    </div>
+
     <ul class="vote-list">
         {{#round.players}}
         <li>
@@ -44,28 +257,57 @@
 
                 <input type="radio" name="poll" id="{{_id}}">
 
-                <a href="{{preview_url}}" target="_blank">
-                    <img src="{{preview_url}}" alt="{{name}}" style="width:50px">
-                </a> {{name}}
+                <span>
+                    {{name}}
+                    <a href="{{preview_url}}" target="_blank">
+                        <img src="{{preview_url}}" alt="{{name}}">
+                    </a>
+                </span>
+
+
             </label>
         </li>
         {{/round.players}}
     </ul>
-
-    <button type="button" onclick="return vote(event)">Vote</button>
+    <div class="vote-button-container">
+        <button type="button" id="vote-button" onclick="return vote(event)">Vote</button>
+    </div>
 </script>
 
 <script id="already-voted-template" type="template">
-    <h4 class="already-voted">HAI GIA' VOTATO PER QUESTO ROUND!</h4>
+
+    <div class="aligner">
+        <div class="aligner-item">
+            <div class="aligned-content ">
+                <p>HAI GIA' VOTATO PER QUESTO ROUND!</p>
+
+                <iframe style="margin-top:40px" src="{{gif_url}}" width="300" height="200" frameBorder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
 </script>
 
 <script type="template" id="thank-you-template">
-    <h4 class="thank-you">GRAZIE PER AVER VOTATO</h4>
+
+    <div class="aligner">
+        <div class="aligner-item">
+            <div class="aligned-content ">
+                <p>GRAZIE PER AVER VOTATO!</p>
+
+                <iframe style="margin-top:40px" src="{{gif_url}}" width="300" height="200" frameBorder="0"></iframe>
+
+            </div>
+        </div>
+    </div>
+
 </script>
 
 <script>
 
     const voteContainer = document.getElementById('vote-container');
+
+    const notVotingTemplate = document.getElementById('not-voting-template');
     const pollTemplate = document.getElementById('poll-template');
     const alreadyVotedTemplate = document.getElementById('already-voted-template');
     const thankYouTemplate = document.getElementById('thank-you-template');
@@ -106,35 +348,86 @@
     function renderNotVoting() {
         console.log('NOT VOTING');
         state.currentRound = undefined;
-        voteContainer.innerHTML = '<p>NOT VOTING</p>';
+        let template = notVotingTemplate.innerHTML;
+        voteContainer.innerHTML = Mustache.render(template, {
+            round: state.currentRound
+        });
     }
 
     function renderVotePoll() {
         let template
 
         if (!state.votes[state.currentRound._id]) {
-            template = pollTemplate.innerHTML;   
+            template = pollTemplate.innerHTML;
             voteContainer.innerHTML = Mustache.render(template, {
                 round: state.currentRound
-            });    
+            });
         } else {
             renderAlreadyVoted()
         }
-        
+
     }
 
     function renderAlreadyVoted() {
         let template = alreadyVotedTemplate.innerHTML;
+
+        const gifs = [
+            'https://giphy.com/embed/l0ExgO5m0tcnfUKyY',
+            'https://giphy.com/embed/nKN7E76a27Uek',
+            'https://giphy.com/embed/uRcoPXfNZUMp2',
+            'https://giphy.com/embed/Jalikml2XiUgw',
+            'https://giphy.com/embed/npUpB306c3EStRK6qP',
+            'https://giphy.com/embed/l0NwuvFERvrjszjd6',
+            'https://giphy.com/embed/nNH7LvI9NhaRq',
+            'https://giphy.com/embed/cS83sLRzgVOeY',
+            'https://giphy.com/embed/3owypf6HrM3J7UTvAA',
+            'https://giphy.com/embed/3o8doTsfXIV3ZTHA76',
+            'https://giphy.com/embed/Jk4ZT6R0OEUoM',
+            'https://giphy.com/embed/ZeB4HcMpsyDo4',
+            'https://giphy.com/embed/3oxRmGNqKwCzJ0AwPC',
+            'https://giphy.com/embed/EXHHMS9caoxAA',
+            'https://giphy.com/embed/3oGRFvUEbJdLWlawLu'
+        ];
+
+        const gifUrl = gifs[Math.round(Math.random() * gifs.length - 1)];
+
         voteContainer.innerHTML = Mustache.render(template, {
-            round: state.currentRound
-        });   
+            round: state.currentRound,
+            gif_url: gifUrl
+        });
     }
 
     function renderThankYou() {
         let template = thankYouTemplate.innerHTML;
+
+        const gifs = [
+            'https://giphy.com/embed/hrBSJ2So6iTo4',
+            'https://giphy.com/embed/KJ1f5iTl4Oo7u',
+            'https://giphy.com/embed/l3q2wJsC23ikJg9xe',
+            'https://giphy.com/embed/9PH9saRidMXIs',
+            'https://giphy.com/embed/1Z02vuppxP1Pa',
+            'https://giphy.com/embed/nEMmyUp4hl1QOzovKh',
+            'https://giphy.com/embed/Ql6WCH22Grmpi',
+            'https://giphy.com/embed/3osxYdXvsGw6wT5lIY',
+            'https://giphy.com/embed/3osxYsERuZiFnVNth6',
+            'https://giphy.com/embed/rAAFjUspOfDEI',
+            'https://giphy.com/embed/144Gf2oA74mHQc',
+            'https://giphy.com/embed/pGKKWL1lI0mIw',
+            'https://giphy.com/embed/U8bDgsXcnIEFy',
+            'https://giphy.com/embed/3oz8xIsloV7zOmt81G',
+            'https://giphy.com/embed/6tHy8UAbv3zgs'
+        ];
+
+        const gifUrl = gifs[Math.round(Math.random() * gifs.length - 1)];
+
         voteContainer.innerHTML = Mustache.render(template, {
-            round: state.currentRound
+            round: state.currentRound,
+            gif_url: gifUrl
         });
+    }
+
+    function toggleLoadingOverlay() {
+        document.querySelector('#overlay').classList.toggle('is-visible')
     }
 
     function fetchRound(roundId) {
@@ -153,6 +446,8 @@
 
         const voteURL = HOST + '/vote/' + state.currentRound._id + '/' + voted;
 
+        toggleLoadingOverlay()
+
         fetch(voteURL, {
             method: 'POST',
             headers: {
@@ -164,8 +459,8 @@
             })
         })
             .then(resp => {
+                toggleLoadingOverlay()
                 if (resp.status !== 200) {
-                    alert('VOTE ERROR');
                     renderAlreadyVoted();
                     throw new Error('nope')
                 }
@@ -173,7 +468,6 @@
             })
             .then(response => {
                 state.votes[state.currentRound._id] = +new Date();
-                // renderVotePoll()
                 renderThankYou()
             })
 
@@ -207,7 +501,7 @@
         function handleAuthentication() {
 
 
-            webAuth.parseHash(function(err, authResult) {
+            webAuth.parseHash(function (err, authResult) {
                 if (authResult && authResult.accessToken && authResult.idToken) {
                     window.location.hash = '';
                     setSession(authResult);
@@ -235,7 +529,7 @@
                     console.log('Access Token must exist to fetch profile');
                 }
 
-                webAuth.client.userInfo(accessToken, function(err, profile) {
+                webAuth.client.userInfo(accessToken, function (err, profile) {
                     if (profile) {
                         state.userProfile = profile;
                         // alert(profile)
@@ -262,10 +556,6 @@
         localStorage.removeItem('id_token');
         localStorage.removeItem('expires_at');
     }
-
-
-
-
 
 
 </script>
