@@ -21,8 +21,8 @@ function formSubmit(e) {
     })
         .then(response => {
             if (response.status === 200) {
-                console.log('OK!');
-                window.location = '/admin';
+                alert('Player created!');
+                window.location = '/hippos';
             } else {
                 alert('ERROR');
                 console.log(response.body)

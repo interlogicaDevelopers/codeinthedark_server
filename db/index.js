@@ -11,6 +11,7 @@ db.once('open', function() {
 
 
 const playerSchema = new mongoose.Schema({
+    fullname: 'string',
     name: 'string'
 });
 

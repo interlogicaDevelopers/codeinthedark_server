@@ -1068,7 +1068,8 @@ app.post('/round', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 app.post('/create-player', ensureLoggedIn, ensureAdmin, wrap(async (req, res) => {
 
     const player = {
-        name: req.body.name
+        name: req.body.name,
+        fullname: req.body.fullname
     };
 
     console.log({player});

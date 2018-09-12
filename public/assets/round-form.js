@@ -73,10 +73,10 @@ function formSubmit(e) {
     })
         .then(response => {
             if (response.status === 200) {
-                console.log('OK!')
-                // window.location = '/admin';
+                alert('ROUND CREATED');
+                window.location = '/hippos';
             } else {
-                alert('ERROR')
+                alert('ERROR');
                 console.log(response.body)
             }
         })
