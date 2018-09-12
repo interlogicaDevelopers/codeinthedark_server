@@ -1104,6 +1104,7 @@ app.delete('/player/:playerId', ensureLoggedIn, ensureAdmin, wrap(async (req, re
 
 app.use((err, req, res, next) => {
     console.log('ERROR');
+    console.log(err)
     if (res.headersSent) {
         return next(err)
     }
