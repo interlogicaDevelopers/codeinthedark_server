@@ -147,9 +147,9 @@ const getAuth0APIToken = function() {
         })
 };
 
-setInterval(() => {
-    getAuth0APIToken();
-}, 1000 * 7000);
+// setInterval(() => {
+//     getAuth0APIToken();
+// }, 1000 * 7000);
 
 const getAuth0User = function(id) {
 
@@ -166,7 +166,7 @@ const getAuth0User = function(id) {
 };
 
 
-getAuth0APIToken();
+// getAuth0APIToken();
 
 
 
@@ -461,17 +461,17 @@ app.post('/vote/:roundId/:playerId', wrap(async (req, res) => {
     console.log(req.params.roundId, req.body)
 
     // CHECK USER
-    let auth0User;
-    try {
-        auth0User = await getAuth0User(req.body.uuid);
-    } catch (error) {
-        res.status(500);
-        res.send({
-            message: 'Invalid User',
-        });
-        res.end();
-        return;
-    }
+    // let auth0User;
+    // try {
+    //     auth0User = await getAuth0User(req.body.uuid);
+    // } catch (error) {
+    //     res.status(500);
+    //     res.send({
+    //         message: 'Invalid User',
+    //     });
+    //     res.end();
+    //     return;
+    // }
 
     const foundVote = await Vote.find({
         round: req.params.roundId,
