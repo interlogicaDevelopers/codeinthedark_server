@@ -298,8 +298,8 @@ app.post('/get-layout', wrap(async (req, res) => {
 
     const fileName = dirName + '/' + req.body.player + '.html';
 
-    const width = 1280;
-    const height = 720;
+    const width = 1920;
+    const height = 1200;
 
     const html = stripTags(req.body.html, ['iframe', 'script', 'link']);
 
