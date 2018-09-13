@@ -331,7 +331,8 @@ app.post('/get-layout', wrap(async (req, res) => {
         const browser = await puppeteer.launch({
             headless: true,
             args: [
-                `--window-size=${ width },${ height }`
+                `--window-size=${ width },${ height }`,
+                '--disable-gpu'
             ]
         });
         const page = await browser.newPage();
