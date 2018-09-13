@@ -329,7 +329,7 @@ app.post('/get-layout', wrap(async (req, res) => {
         console.log('S3Url', S3HtmlUrl);
 
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             args: [
                 `--window-size=${ width },${ height }`
             ]
