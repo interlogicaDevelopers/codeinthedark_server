@@ -397,7 +397,8 @@ app.post('/get-layout', wrap(async (req, res) => {
         res.status(200);
         res.json({
             status: 'OK',
-            redirect: S3PreviewUrl
+            redirect: S3PreviewUrl,
+            player: req.body.player
         });
         res.end()
 
