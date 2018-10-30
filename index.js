@@ -93,7 +93,8 @@ const ensureAdmin = (req, res, next) =>  {
 
     const allowedUsers = [
         'google-oauth2|115414053824006736385',
-        'google-oauth2|112769733839535796080'
+        'google-oauth2|112769733839535796080',
+        'google-oauth2|106633260082611105415'
     ];
 
     if (!allowedUsers.includes(req.user.user_id)) {
