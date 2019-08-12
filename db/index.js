@@ -72,8 +72,8 @@ const feedbackSchema = new mongoose.Schema({
 
 const Feedback = mongoose.model('Feedback', feedbackSchema);
 
-
-mongoose.connect('mongodb://' + process.env.MONGOUSER + ':' + process.env.MONGOPSW + '@' + process.env.MONGOHOST, {
+const connectionString = `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPSW}@${process.env.MONGOHOST}`
+mongoose.connect(connectionString, {
     dbName: 'citd'
 });
 

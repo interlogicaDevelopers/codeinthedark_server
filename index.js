@@ -1114,5 +1114,7 @@ app.use((err, req, res, next) => {
     res.status(500).send(err.message)
 });
 
-
-server.listen(process.env.port || 3000);
+const port = process.env.port || 3000;
+server.listen(port, () => {
+    console.log('server listening on port', port);
+});

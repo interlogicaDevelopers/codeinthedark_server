@@ -8,7 +8,7 @@
 Ottiene il json di configurazione con i dati di navigazione.
 Es:
 
-```javascript
+```
 {
     stage: 'dev',
     register: {
@@ -28,7 +28,7 @@ Es:
 
 #### POST /user
 Aggiunge un utente a database, su aspetta un json nel seguente formato
-```javascript
+```
 {
     uuid: "uuid-device",
     ... [altri dati]
@@ -43,7 +43,7 @@ Lista di round che popoleremo durante l'evento
 Informazioni specifiche di un round comprese di players (con rispettive url di jpeg layout generato), url_layout_originale, start e end time
 esempio record JSON
 
-```javascript
+```
 {
     id: 'ROUND_ID',
     name: 'ROUND_NAME',
@@ -73,7 +73,7 @@ possibili e immaginabili riguardo il device/accunt del votante
 
 #### GET /vote/roundId
 Endpoint per i risultati delle votazioni. Tornerà un array ordinato dei players
-```javascript
+```
 [{
     id: 'PLAYER_ID',
     name: 'PLAYER_NAME',
@@ -86,7 +86,7 @@ ___
 
 ## TIMING SOCKETS
 Socket in broadcast per il timing dei round
-```javascript
+```
 Message format
 {
     type: 'MESSAGE_TYPE'
@@ -97,7 +97,7 @@ Message format
 ### Message types
 
 #### EVENT COUNTDOWN (quanto manca all'evento)
-```javascript
+```
 {
     type: 'EVENT_COUNTDOWN'
     data: {missing: '', time: 0}
@@ -105,7 +105,7 @@ Message format
 ```
 
 #### ROUND COUNTDOWN (quanto manca al prossimo round)
-```javascript
+```
 {
     type: 'ROUND_COUNTDOWN'
     data: {round: _id, missing: '', time: 0}
@@ -113,7 +113,7 @@ Message format
 ```
 
 #### ROUND_END_COUNTDOWN
-```javascript
+```
 {
     type: 'ROUND_END_COUNTDOWN'
     data: {round: _id, missing: '', time: 0, countdownStep: 1}
@@ -123,7 +123,7 @@ countdown step è un contatore da 65 a 0 necessario per il loading delle immagin
 
 
 #### VOTE_COUNTDOWN
-```javascript
+```
 {
     type: 'VOTE_COUNTDOWN',
     data: {round: _id, missing: '', time: 0}
@@ -131,7 +131,7 @@ countdown step è un contatore da 65 a 0 necessario per il loading delle immagin
 ```
 
 #### RECEIVING_RESULTS
-```javascript
+```
 {
     type: 'RECEIVING_RESULTS',
     data: {round: _id}
@@ -139,7 +139,7 @@ countdown step è un contatore da 65 a 0 necessario per il loading delle immagin
 ```
 
 #### SHOWING RESULTS
-```javascript
+```
 {
     type: 'SHOWING_RESULTS',
     data: {
@@ -149,11 +149,29 @@ countdown step è un contatore da 65 a 0 necessario per il loading delle immagin
 ```
 
 #### WAITING
-```javascript
+```
 {
     type: 'WAITING',
     data: {
         round: _id
     }
 }
+```
+
+## DEPLOY
+
+### Mongo DB
+
+```
+docker run --name citd_mongo -p 27017:27017 \
+    -v ${PWD}/mongo_data:/etc/mongo \
+    -e MONGO_INITDB_ROOT_USERNAME=admin \
+    -e MONGO_INITDB_ROOT_PASSWORD=admin \
+    mongo
+```
+
+### API SERVER
+```
+docker build -t citd/api . 
+docker run --network host -d citd/api
 ```
