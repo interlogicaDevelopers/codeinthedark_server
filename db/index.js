@@ -72,10 +72,16 @@ const feedbackSchema = new mongoose.Schema({
 
 const Feedback = mongoose.model('Feedback', feedbackSchema);
 
-const connectionString = `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPSW}@${process.env.MONGOHOST}`
-mongoose.connect(connectionString, {
-    dbName: 'citd'
-});
+const connString = 'mongodb://' + process.env.MONGOUSER + ':' + process.env.MONGOPSW +
+                    '@' + process.env.MONGOHOST + ':' + process.env.MONGOPORT +
+                    '/' + process.env.MONGODB;
+
+mongoose.connect(connString)
+    .then(() => {
+        console.log("Connected to Database");
+    }).catch((err) => {
+        console.log("Not Connected to Database ERROR! ", err);
+    });
 
 module.exports = {
     Player,

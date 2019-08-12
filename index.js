@@ -21,7 +21,9 @@ const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 let multer = require('multer');
 let formData = multer();
 
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
+
+const CONST = require('./const.json')
 
 const sess = {
     secret: process.env.AUTH_SECRET,
@@ -91,11 +93,7 @@ app.use(bodyParser.json());
 
 const ensureAdmin = (req, res, next) =>  {
 
-    const allowedUsers = [
-        'google-oauth2|115414053824006736385',
-        'google-oauth2|112769733839535796080',
-        'google-oauth2|106633260082611105415'
-    ];
+    const allowedUsers = CONST.allowedUsers;
 
     if (!allowedUsers.includes(req.user.user_id)) {
         res.status(420);
@@ -1114,7 +1112,5 @@ app.use((err, req, res, next) => {
     res.status(500).send(err.message)
 });
 
-const port = process.env.port || 3000;
-server.listen(port, () => {
-    console.log('server listening on port', port);
-});
+
+server.listen(process.env.PORT || 3000);
