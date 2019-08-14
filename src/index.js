@@ -9,6 +9,7 @@ const fs = require('fs');
 const sharp = require('sharp');
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
+const path = require('path');
 
 const AWS = require('aws-sdk');
 const request = require('request');
@@ -328,8 +329,10 @@ app.post('/get-layout', wrap(async (req, res) => {
         console.log('S3Url', S3HtmlUrl);
 
         const browser = await puppeteer.launch({
+            executablePath: '/usr/bin/chromium-browser',
             headless: true,
             args: [
+                `--no-sandbox`,
                 `--window-size=${ width },${ height }`,
                 '--disable-gpu'
             ]
@@ -404,7 +407,7 @@ app.post('/get-layout', wrap(async (req, res) => {
 
 
     } catch (err) {
-        console.error(err);
+        console.log(err);
         res.status(500);
         res.send(err);
         res.end();
@@ -794,8 +797,9 @@ setInterval(async () => {
  *
  /*******************************************************/
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '/public')));
 app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, '/views'));
 
 app.get('/', wrap(async (req, res) => {
     res.send('WELCOME')

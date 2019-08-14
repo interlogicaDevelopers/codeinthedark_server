@@ -73,7 +73,7 @@ const feedbackSchema = new mongoose.Schema({
 const Feedback = mongoose.model('Feedback', feedbackSchema);
 
 const connString = 'mongodb://' + process.env.MONGOUSER + ':' + process.env.MONGOPSW +
-                    '@' + process.env.MONGOHOST + ':' + process.env.MONGOPORT +
+                    '@' + process.env.MONGOHOST + ':' + (process.env.MONGOPORT || 27017) +
                     '/' + process.env.MONGODB;
 
 mongoose.connect(connString)
