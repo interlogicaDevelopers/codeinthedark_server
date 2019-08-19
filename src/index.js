@@ -109,7 +109,6 @@ const ensureAdmin = (req, res, next) =>  {
 
 const adminSockets = [];
 
-
 const {Player, Round, Vote, Event, User, Feedback} = require('./db');
 
 /*******************************************************************************
