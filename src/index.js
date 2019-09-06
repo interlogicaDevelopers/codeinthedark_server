@@ -300,7 +300,7 @@ app.post('/get-layout', wrap(async (req, res) => {
     const width = req.body.width;
     const height = req.body.height;
 
-    const html = stripTags(req.body.html, ['iframe', 'script', 'link']);
+    const html = stripTags(req.body.html, ['iframe', 'script']);
 
     try {
         fs.writeFileSync(fileName, html);
