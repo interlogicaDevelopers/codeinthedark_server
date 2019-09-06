@@ -632,11 +632,15 @@ const checkRounds = async () => {
         missing = moment(countdownRunningEvent.event_start).diff(moment());
         duration = moment.duration(missing);
 
+        const missingString = missing > 0
+            ? duration.months() + 'm ' + duration.days() + 'd ' + duration.hours() + 'h ' + leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds())
+            : '0m 0d 0h 00:00';
+
         io.sockets.emit('message', {
             type: 'EVENT_COUNTDOWN',
             data: {
                 time: missing,
-                missing: duration.months() + 'm ' + duration.days() + 'd ' + duration.hours() + 'h ' + leftPadZero(duration.minutes()) + ':' + leftPadZero(duration.seconds())
+                missing: missingString
             }
         });
 
