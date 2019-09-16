@@ -3,7 +3,13 @@ const mongoose = require('mongoose');
 
 const db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'connection error:'));
+db.on('error', (error) => {
+    console.error("CONNECTION ERROR!");
+    console.error(error);
+    setTimeout(() => {
+        startConnection();
+    }, 5000);
+});
 db.once('open', function() {
   // we're connected!
   console.log('connected to mongo')
@@ -76,12 +82,16 @@ const connString = 'mongodb://' + process.env.MONGOUSER + ':' + process.env.MONG
                     '@' + process.env.MONGOHOST + ':' + (process.env.MONGOPORT || 27017) +
                     '/' + process.env.MONGODB;
 
-mongoose.connect(connString)
-    .then(() => {
-        console.log("Connected to Database");
-    }).catch((err) => {
+function startConnection() {
+    mongoose.connect(connString)
+        .then(() => {
+            console.log("Connected to Database");
+        }).catch((err) => {
         console.log("Not Connected to Database ERROR! ", err);
     });
+}
+
+startConnection();
 
 module.exports = {
     Player,
