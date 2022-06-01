@@ -27,7 +27,7 @@
     "puppeteer": "^1.19.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "sharp": "^0.23.0",
+    "sharp": "^0.30.5",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
